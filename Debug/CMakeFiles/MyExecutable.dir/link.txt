@@ -1,0 +1,1 @@
+/usr/bin/c++ -g CMakeFiles/MyExecutable.dir/CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp.o CMakeFiles/MyExecutable.dir/test2.cpp.o -o MyExecutable 
