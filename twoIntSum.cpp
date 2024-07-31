@@ -6,7 +6,7 @@ public:
   std::vector<int> twoSum(std::vector<int> &nums, int target) {
     std::unordered_map<int, int> hashmap;
     for (int i = 0; i < nums.size(); i++) {
-      int difference=abs(target-nums[i]);
+      int difference=target-nums[i];
       if(hashmap.find(difference)!=hashmap.end()){
         if(i<hashmap.at(difference)){
           return {i,hashmap.at(difference)};
@@ -18,6 +18,6 @@ public:
         hashmap.insert({nums[i], i});
       }
     }
-    return {0,0};
+    return {-1,-1};
   }
 };
