@@ -18,6 +18,7 @@ public:
 int main() {
   cout << "--- demo.cpp ---" << endl;
   BankAccount myAccount;
+  myAccount.setBalance(1000);
   cout << myAccount.getBalance();
   cout << "\nProgram ended!" << endl;
   return 0;
@@ -30,3 +31,4 @@ BankAccount::~BankAccount() {
 }
 // We can determine the body of a method later by using this method below
 double BankAccount ::getBalance() { return this->balance; }
+void BankAccount ::setBalance(double bal) { this->balance = bal; }
