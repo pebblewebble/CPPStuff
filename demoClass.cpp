@@ -9,6 +9,8 @@ private:
 public:
   // double getBalance() { return this->balance; }
   // void setBalance(double bal) { this->balance = bal; }
+  BankAccount();
+  ~BankAccount();
   double getBalance();
   void setBalance(double bal);
 };
@@ -20,8 +22,11 @@ int main() {
   cout << "\nProgram ended!" << endl;
   return 0;
 }
-
-//We can determine the body of a method later by using this method below
-double BankAccount ::getBalance(){
-  return this->balance;
+BankAccount::BankAccount() {
+  cout << "---Constructing BankAccount object" << endl;
 }
+BankAccount::~BankAccount() {
+  cout << "---Deconstructing BankAccount object" << endl;
+}
+// We can determine the body of a method later by using this method below
+double BankAccount ::getBalance() { return this->balance; }
