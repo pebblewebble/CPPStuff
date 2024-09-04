@@ -9,6 +9,11 @@ int main() {
   cout << "; Memory Address = " << &i << endl;
   /** Pointer **/
   int *ptr;
-  cout << "\nProgram ended!"<<endl;
+  /** Assign memory address to pointer */
+  ptr = &i;
+  cout << "Value of ptr = " << ptr;
+  cout << "; Dereference Value of *ptr =" << *ptr;
+  cout << "; Memory Address of ptr =" << &ptr << endl;
+  cout << "\nProgram ended!" << endl;
   return 0;
 }
