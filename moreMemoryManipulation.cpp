@@ -3,6 +3,7 @@
 using namespace std;
 
 int main() {
+  double dd;
   /** Memory Allocation */
   double *d = new double;
 
