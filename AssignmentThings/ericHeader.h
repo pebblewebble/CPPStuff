@@ -22,10 +22,9 @@ public:
 
 // Linked list class
 class LinkedList {
-private:
-  Node *head;
 
 public:
+  Node *head;
   LinkedList() { this->head = nullptr; }
 
   void insertAtBeginning(const std::string &data) {
@@ -96,8 +95,8 @@ public:
     }
     return result;
   }
-// std::string* lineSplit(std::string line, std::string delimiter) {
-  void lineSplit(std::string line, std::string delimiter) {
+eric::LinkedList lineSplit(std::string line, std::string delimiter) {
+  // void lineSplit(std::string line, std::string delimiter) {
     std::stringstream data(line);
     eric::LinkedList list;
     std::string word;
@@ -105,9 +104,10 @@ public:
       word = removeSpecialCharacter(word);
       if (!word.empty()) {
         list.insertAtEnd(word);
-        std::cout << word << std::endl;
+        // std::cout << word << std::endl;
       }
     }
+    return list;
   }
 
 class files {

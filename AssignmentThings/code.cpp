@@ -20,8 +20,16 @@ int main() {
         // The substring numbers used is to remove the unnecessary commas and
         // stuff
         line = line.substr(1, line.length() - 6);
-        eric::lineSplit(line, ", ");
+        eric::LinkedList list = eric::lineSplit(line, ", ");
         std::cout << line << std::endl;
+
+        Node *traverse = list.head; 
+
+        while(traverse!=nullptr){
+          std::cout<<traverse->data<<endl;
+          traverse=traverse->next;
+        }
+
         std::cin >> line;
 
 
