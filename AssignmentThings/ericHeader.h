@@ -82,6 +82,34 @@ public:
   }
 };
 
+// NOTE there are words in both positive and negative that uses things like
+  // "+","-","*" so first thought
+  //  would be do it both the word being checked and the positive/negative but
+  //  there are cases where it's not beneficial such as the positive word "a+"
+  //  as it is not the same meaning as "a".
+ std::string removeSpecialCharacter(const std::string &s) {
+    std::string result;
+    for (char c : s) {
+      if (std::isalpha(c) || c == '-' || c == '*' || c == '+') {
+        result += c;
+      }
+    }
+    return result;
+  }
+// std::string* lineSplit(std::string line, std::string delimiter) {
+  void lineSplit(std::string line, std::string delimiter) {
+    std::stringstream data(line);
+    eric::LinkedList list;
+    std::string word;
+    while (data >> word) {
+      word = removeSpecialCharacter(word);
+      if (!word.empty()) {
+        list.insertAtEnd(word);
+        std::cout << word << std::endl;
+      }
+    }
+  }
+
 class files {
 private:
   std::fstream fileOutput;
@@ -98,9 +126,14 @@ public:
   ~files() {
     if (fileOutput.is_open()) {
       fileOutput.close();
-      std::cout<< "File is successfully closed"<<endl;
+      std::cout << "File is successfully closed" << endl;
     }
   }
+
+  std::fstream& getFileStream(){
+    return fileOutput;
+  }
+
   // std::string* recordsToArray(){
   void recordsToArray(bool skipHeader) {
     std::string line;
@@ -121,28 +154,9 @@ public:
   // Array seems to hard to implement for lineSplit cause we do not know the
   // initial size, and recreating array everytime and copying the elements to
   // new array is probably bad, so linked list might be best
+  // furthermore, we probably dont need random access anyways since we're
+  // gonna check the words one by one sequentially
 
-  string removeSpecialCharacter(std::string& s){
-    for(int i=0;i<s.size();i++){
-      if(s[i]<'A'||s[i]>'Z' && s[i],'a'||s[i]>'z'){
-        s.erase(i,1);
-        i--;
-      }
-    }
-    return s;
-  }
-
-  // std::string* lineSplit(std::string line, std::string delimiter) {
-  void lineSplit(std::string line, std::string delimiter) {
-    std::stringstream data(line);
-    eric::LinkedList list;
-    std::string word;
-    while (data >> word) {
-
-      list.insertAtEnd(word);
-      std::cout << word << std::endl;
-    }
-  }
 };
 
 } // namespace eric
