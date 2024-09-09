@@ -8,6 +8,8 @@ using namespace std;
 
 namespace eric {
 
+
+
 // Node class
 class Node {
 public:
@@ -158,5 +160,9 @@ public:
   // gonna check the words one by one sequentially
 
 };
+
+int findPositiveMatch(std::string word){
+//
+}
 
 } // namespace eric

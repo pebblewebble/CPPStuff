@@ -9,7 +9,12 @@ using namespace eric;
 using namespace std;
 int main() {
   eric::files reviews=eric::files("tripadvisor_hotel_reviews.csv"); 
+  //Read words and sort them based on alphabetic
+  //store them according to the first alphabet using hashmap 
+  // key : alphabet
+  // value : dynamic array or linked list?
   std::fstream& reviewsFileStream=reviews.getFileStream();
+  eric::files positiveWords = eric::files("positive-words.txt");
   bool skipHeader = true;
   std::string line;
   int lineCount = 0;
