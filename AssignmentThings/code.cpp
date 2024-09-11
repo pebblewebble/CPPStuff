@@ -14,7 +14,13 @@ int main() {
   // key : alphabet
   // value : dynamic array or linked list?
   std::fstream& reviewsFileStream=reviews.getFileStream();
-  eric::files positiveWords = eric::files("positive-words.txt");
+  eric::files positiveWordsFile = eric::files("positive-words.txt");
+  eric::words_collection positiveWords = eric::words_collection();
+
+  //Probably iterate through positive-words.txt and store them into positiveWords as a 2d array
+
+
+
   bool skipHeader = true;
   std::string line;
   int lineCount = 0;

@@ -8,7 +8,13 @@ using namespace std;
 
 namespace eric {
 
+class words_collection{
+  public:
+    const int initialCapacity = 20;
+  words_collection(){
 
+  }
+};
 
 // Node class
 class Node {
@@ -97,6 +103,11 @@ public:
     }
     return result;
   }
+  // Array seems to hard to implement for lineSplit cause we do not know the
+  // initial size, and recreating array everytime and copying the elements to
+  // new array is probably bad, so linked list might be best
+  // furthermore, we probably dont need random access anyways since we're
+  // gonna check the words one by one sequentially
 eric::LinkedList lineSplit(std::string line, std::string delimiter) {
   // void lineSplit(std::string line, std::string delimiter) {
     std::stringstream data(line);
@@ -153,11 +164,7 @@ public:
     }
   }
 
-  // Array seems to hard to implement for lineSplit cause we do not know the
-  // initial size, and recreating array everytime and copying the elements to
-  // new array is probably bad, so linked list might be best
-  // furthermore, we probably dont need random access anyways since we're
-  // gonna check the words one by one sequentially
+  
 
 };
 
