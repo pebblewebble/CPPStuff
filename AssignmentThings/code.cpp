@@ -15,9 +15,13 @@ int main() {
   // value : dynamic array or linked list?
   std::fstream& reviewsFileStream=reviews.getFileStream();
   eric::files positiveWordsFile = eric::files("positive-words.txt");
-  eric::words_collection positiveWords = eric::words_collection();
+  eric::LinkedListSentimentWords  positiveWords = eric::LinkedListSentimentWords();
 
   //Probably iterate through positive-words.txt and store them into positiveWords as a 2d array
+  //I'll do a linked list implementation first
+
+
+
 
 
 

@@ -8,13 +8,51 @@ using namespace std;
 
 namespace eric {
 
-class words_collection{
-  public:
-    const int initialCapacity = 20;
-  words_collection(){
 
+
+
+// class Words_collection{
+//   public:
+//     int capacity = 20;
+//     std::string* data;
+//     int size;
+//   Words_collection(){
+//     data = new std::string[capacity];
+//   }
+
+//   void resize(){
+//     capacity *=2;
+//     std::string* newData = new std::string[capacity];
+//     memcpy(newData,data,sizeof(data));
+//     delete[] data;
+//     data = newData;
+//   }
+
+//   void addWord(std::string word){
+//     if(size==capacity){
+//       resize();
+//     }else{
+//       data[size++]=word;      
+//     }
+//   }
+
+//   ~Words_collection(){
+//     delete[] data;
+//   }
+// };
+
+class LinkedListSentimentWords{
+ public:
+  Node* head;
+  LinkedList data;
+  int size = 0 ;
+  LinkedListSentimentWords(){
+   size =0 ; 
+   head=nullptr;
   }
-};
+
+  void addWord
+}
 
 // Node class
 class Node {
@@ -163,9 +201,6 @@ public:
       skipHeader = false;
     }
   }
-
-  
-
 };
 
 int findPositiveMatch(std::string word){
