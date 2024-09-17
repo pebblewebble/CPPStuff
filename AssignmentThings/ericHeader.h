@@ -228,20 +228,18 @@ int findMatchingWord(Node* reviewLineHead, Node* positiveWordList, Node* negativ
     while(traverse!=nullptr){
       Node *traversePositive= positiveWordList;
       Node *traverseNegative = negativeWordList; 
-      while(traversePositive!=nullptr){
-        if(traverse->data==traversePositive->data){
-          positiveWordCount++;
-          break;
-        }
-        traversePositive=traversePositive->next;
+      while(traversePositive!=nullptr && traversePositive->data < traverse->data){
+       traversePositive=traversePositive->next;
       }
-
-      while(traverseNegative!=nullptr){
-        if(traverse->data==traverseNegative->data){
-          negativeWordCount++;
-          break;
-        }
+      if(traversePositive!=nullptr && traversePositive->data == traverse->data){
+        positiveWordCount++;
+      }
+ 
+      while(traverseNegative!=nullptr && traverseNegative->data < traverse->data){
         traverseNegative=traverseNegative->next;
+      }
+      if(traverseNegative!=nullptr &&traverse->data==traverseNegative->data){
+          negativeWordCount++;
       }
       traverse=traverse->next;
     }
