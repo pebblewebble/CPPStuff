@@ -41,18 +41,7 @@ namespace eric {
 //   }
 // };
 
-class LinkedListSentimentWords{
- public:
-  Node* head;
-  LinkedList data;
-  int size = 0 ;
-  LinkedListSentimentWords(){
-   size =0 ; 
-   head=nullptr;
-  }
 
-  void addWord
-}
 
 // Node class
 class Node {
@@ -161,6 +150,20 @@ eric::LinkedList lineSplit(std::string line, std::string delimiter) {
     return list;
   }
 
+class LinkedListSentimentWords{
+ public:
+  LinkedList data;
+  int size = 0 ;
+  LinkedListSentimentWords(){
+   size = 0 ; 
+  }
+
+  void addWord(const std::string& word){
+    data.insertAtEnd(word);
+    size++;
+  }
+};
+
 class files {
 private:
   std::fstream fileOutput;
@@ -203,8 +206,140 @@ public:
   }
 };
 
-int findPositiveMatch(std::string word){
-//
+int calculateSentimentScore( int positiveWordCount, int negativeWordCount){
+  int totalMatchingWordCount= positiveWordCount +negativeWordCount;
+  int rawSentimentScore = positiveWordCount-negativeWordCount;
+
+  int minRawScore=-totalMatchingWordCount;
+  int maxRawScore=totalMatchingWordCount;
+
+  double normalizedScore = (double)(rawSentimentScore - minRawScore) / (maxRawScore - minRawScore); 
+  int sentimentScore=1+(4*normalizedScore);
+  return sentimentScore;
+}
+
+int findMatchingWord(Node* reviewLineHead, Node* positiveWordList, Node* negativeWordList){
+    Node *traverse = reviewLineHead; 
+    Node *traversePositive= positiveWordList;
+    Node *traverseNegative = negativeWordList;
+    int positiveWordCount=0;
+    int negativeWordCount=0;
+    int test;
+    while(traverse!=nullptr){
+      Node *traversePositive= positiveWordList;
+      Node *traverseNegative = negativeWordList; 
+      while(traversePositive!=nullptr){
+        if(traverse->data==traversePositive->data){
+          positiveWordCount++;
+          break;
+        }
+        traversePositive=traversePositive->next;
+      }
+
+      while(traverseNegative!=nullptr){
+        if(traverse->data==traverseNegative->data){
+          negativeWordCount++;
+          break;
+        }
+        traverseNegative=traverseNegative->next;
+      }
+      traverse=traverse->next;
+    }
+
+    int sentimentScore = calculateSentimentScore(positiveWordCount, negativeWordCount);
+    // cout<<positiveWordCount<<endl;
+    // cout<<negativeWordCount<<endl;
+    return sentimentScore;
+
+}
+
+// Function to insert a node into the sorted linked list
+void sortedInsert(Node** head_ref, Node* new_node) {
+    Node* current;
+    // Special case for the head end
+    if (*head_ref == nullptr || (*head_ref)->data[0] >= new_node->data[0]) {
+        new_node->next = *head_ref;
+        *head_ref = new_node;
+    } else {
+        // Locate the node before the point of insertion
+        current = *head_ref;
+        while (current->next != nullptr && current->next->data[0] < new_node->data[0]) {
+            current = current->next;
+        }
+        new_node->next = current->next;
+        current->next = new_node;
+    }
+}
+
+// Function to sort a linked list using insertion sort
+void insertionSort(Node** head_ref) {
+    Node* sorted = nullptr;  // Initially, the sorted list is empty
+    Node* current = *head_ref;  // Traverse the given linked list
+
+    while (current != nullptr) {
+        Node* next = current->next;  // Store the next node
+        // Insert current in sorted linked list
+        sortedInsert(&sorted, current);
+        // Update current
+        current = next;
+    }
+    // Update the head_ref to point to the sorted list
+    *head_ref = sorted;
+}
+
+void printList(Node* node) {
+    while (node != nullptr) {
+        std::cout << node->data << " -> ";
+        node = node->next;
+    }
+    std::cout << "nullptr" << std::endl;
+}
+
+Node* merge(Node* left, Node* right) {
+    if (!left) return right;
+    if (!right) return left;
+    
+    if (left->data[0] <= right->data[0]) {
+        left->next = merge(left->next, right);
+        return left;
+    } else {
+        right->next = merge(left, right->next);
+        return right;
+    }
+}
+
+void frontBackSplit(Node* source, Node** frontRef, Node** backRef) {
+    Node* fast;
+    Node* slow;
+    if (!source || !source->next) {
+        *frontRef = source;
+        *backRef = nullptr;
+        return;
+    }
+    slow = source;
+    fast = source->next;
+    while (fast) {
+        fast = fast->next;
+        if (fast) {
+            slow = slow->next;
+            fast = fast->next;
+        }
+    }
+    *frontRef = source;
+    *backRef = slow->next;
+    slow->next = nullptr;
+}
+
+void mergeSort(Node** headRef) {
+    Node* head = *headRef;
+    Node* left;
+    Node* right;
+    if (!head || !head->next) return;
+    
+    frontBackSplit(head, &left, &right);
+    mergeSort(&left);
+    mergeSort(&right);
+    *headRef = merge(left, right);
 }
 
 } // namespace eric
