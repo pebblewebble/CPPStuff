@@ -51,12 +51,13 @@ int main() {
         eric::LinkedList list = eric::lineSplit(line, ", ");
         // std::cout << line << std::endl;
         // printList(list.head);
-        //mergeSort(&list.head);
+         mergeSort(&list.head);
+        // insertionSort(&list.head);
         // printList(list.head);
 
         // cin>>line;
         int score=eric::findMatchingWord(list.head,positiveWords.data.head,negativeWords.data.head);
-        // cout<<score<<endl;
+        // cout <<score<<endl;
         // std::cin >> line;
         // cout<<lineCount<<endl;
         lineCount++;

@@ -60,7 +60,8 @@ class LinkedList {
 
 public:
   Node *head;
-  LinkedList() { this->head = nullptr; }
+  int size;
+  LinkedList() { this->head = nullptr; size=0; }
 
   void insertAtBeginning(const std::string &data) {
     Node *newNode = new Node(data);
@@ -206,7 +207,7 @@ public:
   }
 };
 
-int calculateSentimentScore( int positiveWordCount, int negativeWordCount){
+double calculateSentimentScore( int positiveWordCount, int negativeWordCount){
   int totalMatchingWordCount= positiveWordCount +negativeWordCount;
   int rawSentimentScore = positiveWordCount-negativeWordCount;
 
@@ -214,42 +215,87 @@ int calculateSentimentScore( int positiveWordCount, int negativeWordCount){
   int maxRawScore=totalMatchingWordCount;
 
   double normalizedScore = (double)(rawSentimentScore - minRawScore) / (maxRawScore - minRawScore); 
-  int sentimentScore=1+(4*normalizedScore);
+  double sentimentScore=1+(4*normalizedScore);
   return sentimentScore;
+}
+
+void simpleDisplay(Node* positiveWordsFound, Node* negativeWordsFound, int positiveSize, int negativeSize, int sentimentScore){
+  string continueDisplay;
+  cout<<"Positive Words = "<<positiveSize<<endl;
+  while(positiveWordsFound!=nullptr){
+    cout<<"     "<<positiveWordsFound->data<<endl;
+    positiveWordsFound=positiveWordsFound->next;
+  } 
+  cout<<"\n"<<endl;
+  cout<<"Negative Words = "<<negativeSize<<endl;
+  while(negativeWordsFound!=nullptr){
+    cout<<"     "<<negativeWordsFound->data<<endl;
+    negativeWordsFound=negativeWordsFound->next;
+  }
+  cout<<"\n"<<endl;
+
+  string grade;
+  if(int(sentimentScore)>=4){
+    grade="Postiive";
+  }else if(int(sentimentScore)<=2){
+    grade="Negative";
+  }else if(int(sentimentScore)==3){
+    grade="Neutral";
+  }else{
+    grade="Error";
+  }
+
+  cout<<"Sentiment Score (1-5) is "<<sentimentScore<<", thus the rating should be equal to "<<int(sentimentScore)<<" ("<<grade<<").";
+  cin>>continueDisplay;
 }
 
 int findMatchingWord(Node* reviewLineHead, Node* positiveWordList, Node* negativeWordList){
     Node *traverse = reviewLineHead; 
     Node *traversePositive= positiveWordList;
     Node *traverseNegative = negativeWordList;
+    LinkedList positiveWordsFound;
+    LinkedList negativeWordsFound;
     int positiveWordCount=0;
     int negativeWordCount=0;
     int test;
+
     while(traverse!=nullptr){
       Node *traversePositive= positiveWordList;
       Node *traverseNegative = negativeWordList; 
       while(traversePositive!=nullptr && traversePositive->data < traverse->data){
-       traversePositive=traversePositive->next;
+        traversePositive=traversePositive->next;
       }
       if(traversePositive!=nullptr && traversePositive->data == traverse->data){
+        // cout<<traversePositive->data<<endl;
+        // cout<<traverse->data<<endl;
+        // cin>>test;
+        positiveWordsFound.insertAtEnd(traverse->data);
         positiveWordCount++;
       }
  
       while(traverseNegative!=nullptr && traverseNegative->data < traverse->data){
         traverseNegative=traverseNegative->next;
       }
-      if(traverseNegative!=nullptr &&traverse->data==traverseNegative->data){
-          negativeWordCount++;
+      if(traverseNegative!=nullptr && traverse->data==traverseNegative->data){
+        // cout<<traverseNegative->data<<endl;
+        // cout<<traverse->data<<endl;
+        // cin>>test;
+        negativeWordsFound.insertAtEnd(traverse->data);
+        negativeWordCount++;
       }
       traverse=traverse->next;
     }
 
-    int sentimentScore = calculateSentimentScore(positiveWordCount, negativeWordCount);
+    double sentimentScore = calculateSentimentScore(positiveWordCount, negativeWordCount);
     // cout<<positiveWordCount<<endl;
     // cout<<negativeWordCount<<endl;
+
+    simpleDisplay(positiveWordsFound.head,negativeWordsFound.head,positiveWordCount,negativeWordCount,sentimentScore);
+
     return sentimentScore;
 
 }
+
 
 // Function to insert a node into the sorted linked list
 void sortedInsert(Node** head_ref, Node* new_node) {
