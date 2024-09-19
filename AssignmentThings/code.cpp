@@ -47,18 +47,23 @@ int main() {
       if (!skipHeader) {
         // The substring numbers used is to remove the unnecessary commas and
         // stuff
+        int csvSentimentScore = std::stoi(line.substr(line.length()-1,line.length()));
         line = line.substr(1, line.length() - 6);
         eric::LinkedList list = eric::lineSplit(line, ", ");
         // std::cout << line << std::endl;
         // printList(list.head);
-         mergeSort(&list.head);
+        eric::mergeSort(&list.head);
         // insertionSort(&list.head);
         // printList(list.head);
 
         // cin>>line;
-        int score=eric::findMatchingWord(list.head,positiveWords.data.head,negativeWords.data.head);
+        double score=eric::findMatchingWord(list.head,positiveWords.data.head,negativeWords.data.head);
+
+        int convertedScore = int(score);
+
+        eric::compareScore(convertedScore,csvSentimentScore);
         // cout <<score<<endl;
-        // std::cin >> line;
+        std::cin >> line;
         // cout<<lineCount<<endl;
         lineCount++;
       }
