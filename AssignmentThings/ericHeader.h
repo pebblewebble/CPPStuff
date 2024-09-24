@@ -254,7 +254,7 @@ struct matchingWordReturn {
 };
 
 int findMatchingWord(Node *reviewLineHead, Node *positiveWordList,
-                     Node *negativeWordList) {
+                     Node *negativeWordList,int display) {
   Node *traverse = reviewLineHead;
   Node *traversePositive = positiveWordList;
   Node *traverseNegative = negativeWordList;
@@ -307,9 +307,10 @@ int findMatchingWord(Node *reviewLineHead, Node *positiveWordList,
   answer.positiveWordsFoundHead = positiveWordsFound.head;
   answer.negativeWordsFoundHead = negativeWordsFound.head;
 
-  simpleDisplay(positiveWordsFound.head, negativeWordsFound.head,
-                positiveWordCount, negativeWordCount, sentimentScore);
-
+  if(display!=2){
+    simpleDisplay(positiveWordsFound.head, negativeWordsFound.head,
+                  positiveWordCount, negativeWordCount, sentimentScore);
+  }
   return sentimentScore;
 }
 
@@ -332,6 +333,7 @@ void compareScore(int convertedScore, int csvSentimentScore) {
             "sentiment."
          << endl;
   }
+  cout << "\n\n\n"<<endl;
 }
 
 // Function to insert a node into the sorted linked list

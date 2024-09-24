@@ -10,7 +10,6 @@ using namespace eric;
 using namespace std;
 using namespace chrono;
 int main() {
-  auto start = high_resolution_clock::now();
   eric::files reviews = eric::files("tripadvisor_hotel_reviews.csv");
   // eric::files reviews=eric::files("test.csv");
   // Read words and sort them based on alphabetic
@@ -58,11 +57,17 @@ int main() {
 
   int option;
   std::cin>>option;
+  if(option>3 || option<1){
+    std::cout<<"Number not appropriate, default to 2"<<endl;
+    option=2;
+  }
   int chosenLine=-1;
 
   if(option==1){
     std::cout << "Please enter the line number:\n";
     std::cin >> chosenLine; 
+  }else{
+    std::cout << "Please wait as the program runs. Usually takes 46 seconds\n"<<endl;
   }
 
 
@@ -70,42 +75,68 @@ int main() {
   // bool skipHeader = false;
   int lineCount = 0;
   std::string line;
+  auto start = high_resolution_clock::now();
 
+  //PROGRESS BAR CODE
+
+  float progress = 0.0;
+  int barWidth = 67;
   while (std::getline(reviewsFileStream, line)) {
     // Some files have a header that you might want to skip the first line
     if (!skipHeader) {
-      // The substring numbers used is to remove the unnecessary commas and
-      // stuff
-      int csvSentimentScore = std::stoi(line.substr(line.length() - 1, line.length()));
-      line = line.substr(1, line.length() - 6);
-      eric::LinkedList list = eric::lineSplit(line, ", ");
-      // std::cout << line << std::endl;
-      // printList(list.head);
-      eric::mergeSort(&list.head);
-      // insertionSort(&list.head);
-      // printList(list.head);
+      
+    //PROGRESS BAR CODE
 
-      // cin>>line;
-      if(chosenLine==-1){
-        double score = eric::findMatchingWord(list.head, positiveWords.data.head,
-                                            negativeWords.data.head);
+    std::cout << "[";
+    int pos = barWidth * progress;
+    for (int i = 0; i < barWidth; ++i) {
+        if (i < pos) std::cout << "=";
+        else if (i == pos) std::cout << ">";
+        else std::cout << " ";
+    }
+    std::cout << "] " << int(progress * 100.0) << " %\r";
+    std::cout.flush();
 
-        int convertedScore = int(score);
+    progress += 1.0/20490.0;
 
+    // The substring numbers used is to remove the unnecessary commas and
+    // stuff
+    int csvSentimentScore = std::stoi(line.substr(line.length() - 1, line.length()));
+    line = line.substr(1, line.length() - 6);
+    eric::LinkedList list = eric::lineSplit(line, ", ");
+    // std::cout << line << std::endl;
+    // printList(list.head);
+    eric::mergeSort(&list.head);
+    // insertionSort(&list.head);
+    // printList(list.head);
+
+    // cin>>line;
+    if(chosenLine==-1 || chosenLine==lineCount+1){
+      double score = eric::findMatchingWord(list.head, positiveWords.data.head,
+                                          negativeWords.data.head,option);
+
+      int convertedScore = int(score);
+
+      if(option!=2){
         eric::compareScore(convertedScore, csvSentimentScore);
+      }
+      if(chosenLine==lineCount+1){
         break;
       }
-
-      // std::cin >> line;
-      // cout<<lineCount<<endl;
-      lineCount++;
     }
-    skipHeader = false;
+
+    // std::cin >> line;
+    // cout<<lineCount<<endl;
+    lineCount++;
+    }
+    skipHeader=false;
   }
 
   // reviews.recordsToArray(true);
   auto stop = high_resolution_clock::now();
   auto duration = duration_cast<microseconds>(stop - start);
-  cout << "Time taken: " << duration.count() << " microseconds" << endl;
+  if(chosenLine==-1){
+    cout << "Time taken: " << duration.count() << " microseconds" << endl;
+  }
   cout << "End of program" << endl;
 }
