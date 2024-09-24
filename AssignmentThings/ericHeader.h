@@ -55,9 +55,11 @@ class LinkedList {
 
 public:
   Node *head;
+  Node *tail;
   int size;
   LinkedList() {
     this->head = nullptr;
+    this->tail = nullptr;
     size = 0;
   }
 
@@ -65,19 +67,22 @@ public:
     Node *newNode = new Node(data);
     newNode->next = head;
     head = newNode;
+    if(tail==nullptr){
+      tail=head;
+    }
+    size++;
   }
 
   void insertAtEnd(const std::string &data) {
     Node *newNode = new Node(data);
     if (head == nullptr) {
       head = newNode;
-      return;
+      tail = newNode;
+    }else{
+      tail->next=newNode;
+      tail = newNode;
     }
-    Node *temp = head;
-    while (temp->next != nullptr) {
-      temp = temp->next;
-    }
-    temp->next = newNode;
+    size++;
   }
 
   void deleteAtBeginning() {
@@ -86,7 +91,11 @@ public:
     }
     Node *temp = head;
     head = head->next;
+    if(head==nullptr){
+      tail=nullptr;
+    }
     delete temp;
+    size--;
   }
 
   void deleteAtEnd() {
@@ -96,14 +105,18 @@ public:
     if (head->next == nullptr) {
       delete head;
       head = nullptr;
+      tail=nullptr;
+      size--;
       return;
     }
     Node *temp = head;
-    while (temp->next->next != nullptr) {
+    while (temp->next != tail) {
       temp = temp->next;
     }
-    delete temp->next;
-    temp->next = nullptr;
+    delete tail;
+    tail = temp;
+    tail->next = nullptr;
+    size--;
   }
 
   ~LinkedList() {
@@ -114,6 +127,14 @@ public:
     }
   }
 };
+
+void printList(Node *node) {
+  while (node != nullptr) {
+    std::cout << node->data << " -> ";
+    node = node->next;
+  }
+  std::cout << "nullptr" << std::endl;
+}
 
 // NOTE there are words in both positive and negative that uses things like
 // "+","-","*" so first thought
@@ -318,7 +339,7 @@ matchingWordReturn findMatchingWord(Node *reviewLineHead, Node *positiveWordList
 void compareScore(int convertedScore, int csvSentimentScore) {
   cout << "\n" << endl;
   cout << "Sentiment Score (1-5) = " << convertedScore << endl;
-  cout << "Rating given by user =" << csvSentimentScore << endl;
+  cout << "Rating given by user = " << csvSentimentScore << endl;
   cout << "\n" << endl;
   cout << "Analysis Output:\n" << endl;
   if (convertedScore != csvSentimentScore) {
@@ -337,13 +358,7 @@ void compareScore(int convertedScore, int csvSentimentScore) {
   cout << "\n\n\n"<<endl;
 }
 
-void printList(Node *node) {
-  while (node != nullptr) {
-    std::cout << node->data << " -> ";
-    node = node->next;
-  }
-  std::cout << "nullptr" << std::endl;
-}
+
 
 Node *merge(Node *left, Node *right) {
   if (!left)

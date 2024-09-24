@@ -90,6 +90,7 @@ int main() {
   auto start = high_resolution_clock::now();
   int totalPositiveWords=0;
   int totalNegativeWords=0;
+  eric::LinkedList allWordsFound;
 
   while (std::getline(reviewsFileStream, line)) {
     // Some files have a header that you might want to skip the first line
@@ -107,10 +108,20 @@ int main() {
       matchingWordReturn result = eric::findMatchingWord(list.head, positiveWords.data.head,
                                           negativeWords.data.head,option);
 
-      int convertedScore = int(result.sentimentScore);
+      int convertedScore = int(*result.sentimentScore);
 
       totalPositiveWords+=*result.positiveWordCount;
       totalNegativeWords+=*result.negativeWordCount;
+
+      while(result.positiveWordsFoundHead!=nullptr){
+        allWordsFound.insertAtEnd(result.positiveWordsFoundHead->data);
+        result.positiveWordsFoundHead=result.positiveWordsFoundHead->next;
+      }
+
+      while(result.negativeWordsFoundHead!=nullptr){
+        allWordsFound.insertAtEnd(result.negativeWordsFoundHead->data);
+        result.negativeWordsFoundHead=result.negativeWordsFoundHead->next;
+      }
 
       if(option!=2){
         eric::compareScore(convertedScore, csvSentimentScore);
@@ -125,7 +136,9 @@ int main() {
     skipHeader=false;
   }
 
-  // reviews.recordsToArray(true);
+  printList(allWordsFound.head);
+
+
   auto stop = high_resolution_clock::now();
   auto duration = duration_cast<seconds>(stop - start);
   if(chosenLine==-1){
