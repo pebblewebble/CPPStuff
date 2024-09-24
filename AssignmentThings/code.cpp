@@ -42,18 +42,31 @@ int main() {
 
   // User CLI?
   std::cout << "╔═════════════════════════════════════════════════════════════════╗\n";
-  std::cout << "║ ██╗    ██╗███████╗██╗      ██████╗ ██████╗ ███╗   ███╗███████╗  ║\n";
-  std::cout << "║ ██║    ██║██╔════╝██║     ██╔════╝██╔═══██╗████╗ ████║██╔════╝  ║\n";
-  std::cout << "║ ██║ █╗ ██║█████╗  ██║     ██║     ██║   ██║██╔████╔██║█████╗    ║\n";
-  std::cout << "║ ██║███╗██║██╔══╝  ██║     ██║     ██║   ██║██║╚██╔╝██║██╔══╝    ║\n";
-  std::cout << "║ ╚███╔███╔╝███████╗███████╗╚██████╗╚██████╔╝██║ ╚═╝ ██║███████╗  ║\n";
-  std::cout << "║  ╚══╝╚══╝ ╚══════╝╚══════╝ ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚══════╝  ║\n";
-  std::cout << "╚═════════════════════════════════════════════════════════════════╝\n";
-  std::cout << "1. Choose a line to compare\n";
+  std::cout << "║                ██████╗ ███████╗████████╗██████╗                 ║\n";
+  std::cout << "║                ██╔══██╗██╔════╝╚══██╔══╝██╔══██╗                ║\n";
+  std::cout << "║                ██║  ██║███████╗   ██║   ██████╔╝                ║\n";
+  std::cout << "║                ██║  ██║╚════██║   ██║   ██╔══██╗                ║\n";
+  std::cout << "║                ██████╔╝███████║   ██║   ██║  ██║                ║\n";
+  std::cout << "║                ╚═════╝ ╚══════╝   ╚═╝   ╚═╝  ╚═╝                ║\n";
+  std::cout << "║                                                                 ║\n";
+  std::cout << "║            ██████╗  █████╗ ██████╗ ████████╗     ██╗            ║\n";
+  std::cout << "║            ██╔══██╗██╔══██╗██╔══██╗╚══██╔══╝    ███║            ║\n";
+  std::cout << "║            ██████╔╝███████║██████╔╝   ██║       ╚██║            ║\n";
+  std::cout << "║            ██╔═══╝ ██╔══██║██╔══██╗   ██║        ██║            ║\n";
+  std::cout << "║            ██║     ██║  ██║██║  ██║   ██║        ██║            ║\n";
+  std::cout << "║            ╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝        ╚═╝            ║\n";
+  std::cout << "║                                                                 ║\n";
+  std::cout << "║ ██████╗ ██████╗  ██████╗ ██╗   ██╗██████╗      █████╗ ██████╗   ║\n";
+  std::cout << "║ ██╔════╝ ██╔══██╗██╔═══██╗██║   ██║██╔══██╗    ██╔══██╗██╔══██╗ ║\n";
+  std::cout << "║ ██║  ███╗██████╔╝██║   ██║██║   ██║██████╔╝    ███████║██████╔╝ ║\n";
+  std::cout << "║ ██║   ██║██╔══██╗██║   ██║██║   ██║██╔═══╝     ██╔══██║██╔══██╗ ║\n";
+  std::cout << "║ ╚██████╔╝██║  ██║╚██████╔╝╚██████╔╝██║         ██║  ██║██████╔╝ ║\n";
+  std::cout << "║  ╚═════╝ ╚═╝  ╚═╝ ╚═════╝  ╚═════╝ ╚═╝         ╚═╝  ╚═╝╚═════╝  ║\n";
+  std::cout << "╚═════════════════════════════════════════════════════════════════╝\n"; 
+  std::cout << "1. Choose a line to compare score\n";
   std::cout << "2. Check Linked List Speed\n";
   std::cout << "3. Check Linked List Speed with Display Output\n";
   std::cout << "   *Note: It compares every line\n";
-  // std::cout << "4. "
 
   int option;
   std::cin>>option;
@@ -72,50 +85,32 @@ int main() {
 
 
   bool skipHeader = true;
-  // bool skipHeader = false;
   int lineCount = 0;
   std::string line;
   auto start = high_resolution_clock::now();
+  int totalPositiveWords=0;
+  int totalNegativeWords=0;
 
-  //PROGRESS BAR CODE
-
-  float progress = 0.0;
-  int barWidth = 67;
   while (std::getline(reviewsFileStream, line)) {
     // Some files have a header that you might want to skip the first line
     if (!skipHeader) {
-      
-    //PROGRESS BAR CODE
-
-    std::cout << "[";
-    int pos = barWidth * progress;
-    for (int i = 0; i < barWidth; ++i) {
-        if (i < pos) std::cout << "=";
-        else if (i == pos) std::cout << ">";
-        else std::cout << " ";
-    }
-    std::cout << "] " << int(progress * 100.0) << " %\r";
-    std::cout.flush();
-
-    progress += 1.0/20490.0;
-
     // The substring numbers used is to remove the unnecessary commas and
     // stuff
     int csvSentimentScore = std::stoi(line.substr(line.length() - 1, line.length()));
     line = line.substr(1, line.length() - 6);
     eric::LinkedList list = eric::lineSplit(line, ", ");
-    // std::cout << line << std::endl;
     // printList(list.head);
     eric::mergeSort(&list.head);
-    // insertionSort(&list.head);
     // printList(list.head);
 
-    // cin>>line;
     if(chosenLine==-1 || chosenLine==lineCount+1){
-      double score = eric::findMatchingWord(list.head, positiveWords.data.head,
+      matchingWordReturn result = eric::findMatchingWord(list.head, positiveWords.data.head,
                                           negativeWords.data.head,option);
 
-      int convertedScore = int(score);
+      int convertedScore = int(result.sentimentScore);
+
+      totalPositiveWords+=*result.positiveWordCount;
+      totalNegativeWords+=*result.negativeWordCount;
 
       if(option!=2){
         eric::compareScore(convertedScore, csvSentimentScore);
@@ -125,8 +120,6 @@ int main() {
       }
     }
 
-    // std::cin >> line;
-    // cout<<lineCount<<endl;
     lineCount++;
     }
     skipHeader=false;
@@ -134,9 +127,9 @@ int main() {
 
   // reviews.recordsToArray(true);
   auto stop = high_resolution_clock::now();
-  auto duration = duration_cast<microseconds>(stop - start);
+  auto duration = duration_cast<seconds>(stop - start);
   if(chosenLine==-1){
-    cout << "Time taken: " << duration.count() << " microseconds" << endl;
+    cout << "Time taken: " << duration.count() << " seconds" << endl;
   }
   cout << "End of program" << endl;
 }

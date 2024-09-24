@@ -246,6 +246,7 @@ void simpleDisplay(Node *positiveWordsFound, Node *negativeWordsFound,
 }
 
 struct matchingWordReturn {
+  //Using pointers to save memory
   double *sentimentScore;
   int *positiveWordCount;
   int *negativeWordCount;
@@ -253,7 +254,7 @@ struct matchingWordReturn {
   Node *negativeWordsFoundHead;
 };
 
-int findMatchingWord(Node *reviewLineHead, Node *positiveWordList,
+matchingWordReturn findMatchingWord(Node *reviewLineHead, Node *positiveWordList,
                      Node *negativeWordList,int display) {
   Node *traverse = reviewLineHead;
   Node *traversePositive = positiveWordList;
@@ -311,7 +312,7 @@ int findMatchingWord(Node *reviewLineHead, Node *positiveWordList,
     simpleDisplay(positiveWordsFound.head, negativeWordsFound.head,
                   positiveWordCount, negativeWordCount, sentimentScore);
   }
-  return sentimentScore;
+  return answer;
 }
 
 void compareScore(int convertedScore, int csvSentimentScore) {
@@ -334,41 +335,6 @@ void compareScore(int convertedScore, int csvSentimentScore) {
          << endl;
   }
   cout << "\n\n\n"<<endl;
-}
-
-// Function to insert a node into the sorted linked list
-void sortedInsert(Node **head_ref, Node *new_node) {
-  Node *current;
-  // Special case for the head end
-  if (*head_ref == nullptr || (*head_ref)->data[0] >= new_node->data[0]) {
-    new_node->next = *head_ref;
-    *head_ref = new_node;
-  } else {
-    // Locate the node before the point of insertion
-    current = *head_ref;
-    while (current->next != nullptr &&
-           current->next->data[0] < new_node->data[0]) {
-      current = current->next;
-    }
-    new_node->next = current->next;
-    current->next = new_node;
-  }
-}
-
-// Function to sort a linked list using insertion sort
-void insertionSort(Node **head_ref) {
-  Node *sorted = nullptr;    // Initially, the sorted list is empty
-  Node *current = *head_ref; // Traverse the given linked list
-
-  while (current != nullptr) {
-    Node *next = current->next; // Store the next node
-    // Insert current in sorted linked list
-    sortedInsert(&sorted, current);
-    // Update current
-    current = next;
-  }
-  // Update the head_ref to point to the sorted list
-  *head_ref = sorted;
 }
 
 void printList(Node *node) {
