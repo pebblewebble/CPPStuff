@@ -2,5 +2,9 @@
     "editor.tokenColorCustomizations": {
         "comments": "",
         "textMateRules": []
+    },
+    "files.associations": {
+        "*.embeddedhtml": "html",
+        "iostream": "cpp"
     }
 }
