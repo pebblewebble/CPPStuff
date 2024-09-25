@@ -438,29 +438,24 @@ void printFrequencyList(Node* head) {
 void printMinFrequencyWords(Node* head) {
     if (head == nullptr) return;
 
-    std::cout<<"\r";
+    std::cout<<"Minimum used words in the reviews: ";
     Node* current = head;
     while (current != nullptr) {
+      if(current->next!=nullptr){
         if (current->frequencyCount <= current->next->frequencyCount) {
-            std::cout<<current->data
-        }
-        current = current->next;
-    }
-
-    current = head;
-    std::cout << "Minimum used words in the reviews: ";
-    bool firstWord = true; // To handle formatting
-    while (current != nullptr) {
-        if (current->frequencyCount == minCount) {
-            if (!firstWord) {
-                std::cout << ", "; // Separate multiple words
+            if(current!=head){
+              std::cout<<", ";  
             }
-            std::cout << current->data;
-            firstWord = false;
+            std::cout<<current->data;
+        }else{
+          break;
         }
         current = current->next;
+      }else{
+        break;
+      }
     }
-    std::cout << std::endl;
+    std::cout<<endl;
 }
 
 void printFrequencyInAscendingOrder(Node* allWordsFoundHead) {
@@ -493,6 +488,7 @@ void printFrequencyInAscendingOrder(Node* allWordsFoundHead) {
 
     printFrequencyList(frequencyList.head);
 
+    printMinFrequencyWords(frequencyList.head);
   
 }
 
