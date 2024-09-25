@@ -95,6 +95,12 @@ int main() {
   while (std::getline(reviewsFileStream, line)) {
     // Some files have a header that you might want to skip the first line
     if (!skipHeader) {
+    
+    if(chosenLine==lineCount+1){
+      std::cout<<line<<endl;
+      std::cout<<"\n"<<endl;
+    }
+
     // The substring numbers used is to remove the unnecessary commas and
     // stuff
     int csvSentimentScore = std::stoi(line.substr(line.length() - 1, line.length()));
@@ -108,19 +114,21 @@ int main() {
       matchingWordReturn result = eric::findMatchingWord(list.head, positiveWords.data.head,
                                           negativeWords.data.head,option);
 
-      int convertedScore = int(*result.sentimentScore);
+      int convertedScore = int(result.sentimentScore);
 
-      totalPositiveWords+=*result.positiveWordCount;
-      totalNegativeWords+=*result.negativeWordCount;
+      totalPositiveWords+=result.positiveWordCount;
+      totalNegativeWords+=result.negativeWordCount;
 
-      while(result.positiveWordsFoundHead!=nullptr){
-        allWordsFound.insertAtEnd(result.positiveWordsFoundHead->data);
-        result.positiveWordsFoundHead=result.positiveWordsFoundHead->next;
+      Node *positiveTraverse = result.positiveWordsFound.head;
+      while(positiveTraverse!=nullptr){
+        allWordsFound.insertAtEnd(positiveTraverse->data);
+        positiveTraverse=positiveTraverse->next;
       }
 
-      while(result.negativeWordsFoundHead!=nullptr){
-        allWordsFound.insertAtEnd(result.negativeWordsFoundHead->data);
-        result.negativeWordsFoundHead=result.negativeWordsFoundHead->next;
+      Node *negativeTraverse = result.negativeWordsFound.head;
+      while(negativeTraverse!=nullptr){
+        allWordsFound.insertAtEnd(negativeTraverse->data);
+        negativeTraverse=negativeTraverse->next;
       }
 
       if(option!=2){
@@ -136,13 +144,25 @@ int main() {
     skipHeader=false;
   }
 
-  printList(allWordsFound.head);
-
-
   auto stop = high_resolution_clock::now();
   auto duration = duration_cast<seconds>(stop - start);
   if(chosenLine==-1){
     cout << "Time taken: " << duration.count() << " seconds" << endl;
   }
+
+  std::cout<<"Would you like to see summary of overall reviews?(1/0)\n*Too much words to actually see the top in output if comparing all lines"<<endl;
+  std::cin>>option;
+
+  if(option==1){
+    std::cout<<"Total Reviews = "<<lineCount+1<<endl;
+    std::cout<<"Total Count of Positive Words = "<<totalPositiveWords<<endl;
+    std::cout<<"Total Count of Negative Words = "<<totalNegativeWords<<endl;
+    std::cout<<"\n"<<endl;
+    std::cout<<"Frequency of each word used in overall reviews, listed in ascending order based on frequency:"<<endl;
+    std::cout<<"\n"<<endl;
+
+    printFrequencyInAscendingOrder(allWordsFound.head);
+  }
+
   cout << "End of program" << endl;
 }

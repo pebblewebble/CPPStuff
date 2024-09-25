@@ -7,45 +7,16 @@
 using namespace std;
 
 namespace eric {
-
-// class Words_collection{
-//   public:
-//     int capacity = 20;
-//     std::string* data;
-//     int size;
-//   Words_collection(){
-//     data = new std::string[capacity];
-//   }
-
-//   void resize(){
-//     capacity *=2;
-//     std::string* newData = new std::string[capacity];
-//     memcpy(newData,data,sizeof(data));
-//     delete[] data;
-//     data = newData;
-//   }
-
-//   void addWord(std::string word){
-//     if(size==capacity){
-//       resize();
-//     }else{
-//       data[size++]=word;
-//     }
-//   }
-
-//   ~Words_collection(){
-//     delete[] data;
-//   }
-// };
-
 // Node class
 class Node {
 public:
   std::string data;
+  int frequencyCount;
   Node *next;
 
   Node(const std::string &data) {
     this->data = data;
+    this->frequencyCount = 1;
     this->next = nullptr;
   }
 };
@@ -83,6 +54,11 @@ public:
       tail = newNode;
     }
     size++;
+  }
+
+  void insertAtEnd(Node *node) {
+      if (node == nullptr) return; 
+      insertAtEnd(node->data); 
   }
 
   void deleteAtBeginning() {
@@ -235,18 +211,21 @@ double calculateSentimentScore(int positiveWordCount, int negativeWordCount) {
   return sentimentScore;
 }
 
-void simpleDisplay(Node *positiveWordsFound, Node *negativeWordsFound,
+void simpleDisplay(const Node *positiveWordsFound,const Node *negativeWordsFound,
                    int positiveSize, int negativeSize, int sentimentScore) {
   cout << "Positive Words = " << positiveSize << endl;
-  while (positiveWordsFound != nullptr) {
-    cout << "     " << positiveWordsFound->data << endl;
-    positiveWordsFound = positiveWordsFound->next;
+  const Node* tempPositive = positiveWordsFound;
+  while (tempPositive != nullptr) {
+      cout << "     " << tempPositive->data << endl;
+      tempPositive = tempPositive->next;
   }
-  cout << "\n" << endl;
+  cout << "\n" << endl; 
+
   cout << "Negative Words = " << negativeSize << endl;
-  while (negativeWordsFound != nullptr) {
-    cout << "     " << negativeWordsFound->data << endl;
-    negativeWordsFound = negativeWordsFound->next;
+  const Node* tempNegative = negativeWordsFound;
+  while (tempNegative != nullptr) {
+      cout << "     " << tempNegative->data << endl;
+      tempNegative = tempNegative->next;
   }
   cout << "\n" << endl;
 
@@ -267,23 +246,21 @@ void simpleDisplay(Node *positiveWordsFound, Node *negativeWordsFound,
 }
 
 struct matchingWordReturn {
-  //Using pointers to save memory
-  double *sentimentScore;
-  int *positiveWordCount;
-  int *negativeWordCount;
-  Node *positiveWordsFoundHead;
-  Node *negativeWordsFoundHead;
+  double sentimentScore;
+  int positiveWordCount;
+  int negativeWordCount;
+  LinkedList positiveWordsFound;
+  LinkedList negativeWordsFound;
 };
 
 matchingWordReturn findMatchingWord(Node *reviewLineHead, Node *positiveWordList,
                      Node *negativeWordList,int display) {
   Node *traverse = reviewLineHead;
+  matchingWordReturn answer;
   Node *traversePositive = positiveWordList;
   Node *traverseNegative = negativeWordList;
-  LinkedList positiveWordsFound;
-  LinkedList negativeWordsFound;
-  int positiveWordCount = 0;
-  int negativeWordCount = 0;
+  answer.positiveWordCount = 0;
+  answer.negativeWordCount = 0;
   int test;
 
   while (traverse != nullptr) {
@@ -295,11 +272,9 @@ matchingWordReturn findMatchingWord(Node *reviewLineHead, Node *positiveWordList
     }
     if (traversePositive != nullptr &&
         traversePositive->data == traverse->data) {
-      // cout<<traversePositive->data<<endl;
-      // cout<<traverse->data<<endl;
-      // cin>>test;
-      positiveWordsFound.insertAtEnd(traverse->data);
-      positiveWordCount++;
+
+      answer.positiveWordsFound.insertAtEnd(traverse->data);
+      answer.positiveWordCount++;
     }
 
     while (traverseNegative != nullptr &&
@@ -308,30 +283,21 @@ matchingWordReturn findMatchingWord(Node *reviewLineHead, Node *positiveWordList
     }
     if (traverseNegative != nullptr &&
         traverse->data == traverseNegative->data) {
-      // cout<<traverseNegative->data<<endl;
-      // cout<<traverse->data<<endl;
-      // cin>>test;
-      negativeWordsFound.insertAtEnd(traverse->data);
-      negativeWordCount++;
+   
+      answer.negativeWordsFound.insertAtEnd(traverse->data);
+      answer.negativeWordCount++;
     }
     traverse = traverse->next;
   }
 
-  double sentimentScore =
-      calculateSentimentScore(positiveWordCount, negativeWordCount);
+  answer.sentimentScore =
+      calculateSentimentScore(answer.positiveWordCount, answer.negativeWordCount);
   // cout<<positiveWordCount<<endl;
   // cout<<negativeWordCount<<endl;
 
-  matchingWordReturn answer;
-  answer.sentimentScore = &sentimentScore;
-  answer.positiveWordCount = &positiveWordCount;
-  answer.negativeWordCount = &negativeWordCount;
-  answer.positiveWordsFoundHead = positiveWordsFound.head;
-  answer.negativeWordsFoundHead = negativeWordsFound.head;
-
   if(display!=2){
-    simpleDisplay(positiveWordsFound.head, negativeWordsFound.head,
-                  positiveWordCount, negativeWordCount, sentimentScore);
+    simpleDisplay(answer.positiveWordsFound.head, answer.negativeWordsFound.head,
+                  answer.positiveWordCount, answer.negativeWordCount, answer.sentimentScore);
   }
   return answer;
 }
@@ -355,10 +321,8 @@ void compareScore(int convertedScore, int csvSentimentScore) {
             "sentiment."
          << endl;
   }
-  cout << "\n\n\n"<<endl;
+  cout << "\n"<<endl;
 }
-
-
 
 Node *merge(Node *left, Node *right) {
   if (!left)
@@ -408,6 +372,128 @@ void mergeSort(Node **headRef) {
   mergeSort(&left);
   mergeSort(&right);
   *headRef = merge(left, right);
+}
+
+Node *split(Node *head) {
+    Node *fast = head;
+    Node *slow = head;
+
+    while (fast != nullptr && fast->next != nullptr) {
+        fast = fast->next->next;
+        if (fast != nullptr) {
+            slow = slow->next;
+        }
+    }
+
+    // Split the list into two halves
+    Node *temp = slow->next;
+    slow->next = nullptr;
+    return temp;
+}
+
+Node *mergeInt(Node *first, Node *second) {
+    if (first == nullptr) return second;
+    if (second == nullptr) return first;
+
+    if (first->frequencyCount < second->frequencyCount) {
+        first->next = mergeInt(first->next, second);
+        return first;
+    } else if (first->frequencyCount == second->frequencyCount) {
+        first->next = mergeInt(first->next, second);
+        return first; 
+    } else {
+        second->next = mergeInt(first, second->next);
+        return second;
+    }
+}
+
+// Function to perform merge sort on a singly linked list
+Node *mergeSortInt(Node *head) {
+  
+    // Base case: if the list is empty or has only one node, 
+    // it's already sorted
+    if (head == nullptr || head->next == nullptr)
+        return head;
+
+    // Split the list into two halves
+    Node *second = split(head);
+
+    // Recursively sort each half
+    head = mergeSortInt(head);
+    second = mergeSortInt(second);
+
+    // Merge the two sorted halves
+    return mergeInt(head, second);
+}
+
+void printFrequencyList(Node* head) {
+    Node* current = head;
+    
+    while (current != nullptr) {
+        std::cout << current->data << " = " << current->frequencyCount << " times" << std::endl;
+        current = current->next;
+    }
+}
+
+void printMinFrequencyWords(Node* head) {
+    if (head == nullptr) return;
+
+    std::cout<<"\r";
+    Node* current = head;
+    while (current != nullptr) {
+        if (current->frequencyCount <= current->next->frequencyCount) {
+            std::cout<<current->data
+        }
+        current = current->next;
+    }
+
+    current = head;
+    std::cout << "Minimum used words in the reviews: ";
+    bool firstWord = true; // To handle formatting
+    while (current != nullptr) {
+        if (current->frequencyCount == minCount) {
+            if (!firstWord) {
+                std::cout << ", "; // Separate multiple words
+            }
+            std::cout << current->data;
+            firstWord = false;
+        }
+        current = current->next;
+    }
+    std::cout << std::endl;
+}
+
+void printFrequencyInAscendingOrder(Node* allWordsFoundHead) {
+    // Step 1: Maintain a frequency linked list
+    LinkedList frequencyList; // Assuming LinkedList is defined to manage nodes
+    Node* current = allWordsFoundHead;
+
+    while (current != nullptr) {
+        // Check if the word already exists in the frequencyList
+        Node* frequencyNode = frequencyList.head;
+        while (frequencyNode != nullptr && frequencyNode->data != current->data) {
+            frequencyNode = frequencyNode->next;
+        }
+
+        if (frequencyNode == nullptr) {              
+            frequencyList.insertAtEnd(current->data);    
+        } else {
+            frequencyNode->frequencyCount++;     
+            // cout<<frequencyNode->data<<endl;      
+            // cout<<frequencyNode->frequencyCount<<endl;
+        }
+        current = current->next;                       
+    }
+
+    // printList(frequencyList.head);   
+
+    frequencyList.head = mergeSortInt(frequencyList.head);      
+
+    // printList(frequencyList.head);     
+
+    printFrequencyList(frequencyList.head);
+
+  
 }
 
 } // namespace eric
