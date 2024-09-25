@@ -442,9 +442,9 @@ void printMinFrequencyWords(Node* head) {
 
     std::cout<<"Minimum used words in the reviews: ";
     Node* current = head;
+    int min = head->frequencyCount;
     while (current != nullptr) {
-      if(current->next!=nullptr){
-        if (current->frequencyCount <= current->next->frequencyCount) {
+        if (current->frequencyCount == min) {
             if(current!=head){
               std::cout<<", ";  
             }
@@ -453,9 +453,6 @@ void printMinFrequencyWords(Node* head) {
           break;
         }
         current = current->next;
-      }else{
-        break;
-      }
     }
     std::cout<<endl;
 }
