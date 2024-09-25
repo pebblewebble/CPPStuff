@@ -426,13 +426,15 @@ Node *mergeSortInt(Node *head) {
     return mergeInt(head, second);
 }
 
-void printFrequencyList(Node* head) {
+int printFrequencyList(Node* head) {
     Node* current = head;
-    
+    int max = 0;
     while (current != nullptr) {
         std::cout << current->data << " = " << current->frequencyCount << " times" << std::endl;
+        max = current->frequencyCount;
         current = current->next;
     }
+    return max;
 }
 
 void printMinFrequencyWords(Node* head) {
@@ -456,6 +458,40 @@ void printMinFrequencyWords(Node* head) {
       }
     }
     std::cout<<endl;
+}
+
+void printMaxFrequencyWords(Node* head) {
+    int maxCount = head->frequencyCount;
+    Node* current = head;
+
+    while (current != nullptr) {
+        if (current->frequencyCount > maxCount) {
+            maxCount = current->frequencyCount;
+        }
+        current = current->next;
+    }
+
+    bool hasMaxWords = false;
+    current = head; 
+
+    cout << "Maximum used words in the reviews: ";
+
+    while (current != nullptr) {
+        if (current->frequencyCount == maxCount) {
+            if (hasMaxWords) {
+                cout << ", "; 
+            }
+            cout << current->data;
+            hasMaxWords = true; 
+        }
+        current = current->next;
+    }
+
+    if (!hasMaxWords) {
+        cout << "None"; 
+    }
+    
+    cout << endl; 
 }
 
 void printFrequencyInAscendingOrder(Node* allWordsFoundHead) {
@@ -486,10 +522,11 @@ void printFrequencyInAscendingOrder(Node* allWordsFoundHead) {
 
     // printList(frequencyList.head);     
 
-    printFrequencyList(frequencyList.head);
+    int max = printFrequencyList(frequencyList.head);
 
     printMinFrequencyWords(frequencyList.head);
   
+    printMaxFrequencyWords(frequencyList.head);
 }
 
 } // namespace eric
