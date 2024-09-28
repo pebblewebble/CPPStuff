@@ -3,6 +3,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <iomanip>
 
 using namespace std;
 
@@ -210,7 +211,8 @@ public:
 
 double calculateSentimentScore(int positiveWordCount, int negativeWordCount) {
   if(positiveWordCount==0&&negativeWordCount==0){
-    return 0;
+    //neutral
+    return 3;
   }
   //Based on the given assignment
   int totalMatchingWordCount = positiveWordCount + negativeWordCount;
@@ -569,7 +571,7 @@ void quarterlyAverage(Node* calculatedScoresHead,int size,string mode){
   }
 }
 
-void distributionPercentage(Node* calculatedScoresHead,int size){
+void distributionPercentage(Node* calculatedScoresHead){
   std::cout<<"\n"<<endl;
   Node* calculatedTraverse=calculatedScoresHead;
   int count=0;
@@ -578,22 +580,27 @@ void distributionPercentage(Node* calculatedScoresHead,int size){
   int neutralReviewCount=0;
   while(calculatedTraverse!=nullptr){
     count++;
-    currentTotal+=stoi(calculatedTraverse->data);
-
-    if(count==int(size*.25)){
-      std::cout<<"Q1 Average "<<mode<<" Score: "<<int(currentTotal/count)<<endl;
-    }
-    if(count==int(size*.50)){
-      std::cout<<"Q1 Average "<<mode<<" Score: "<<int(currentTotal/count)<<endl;
-    }
-    if(count==int(size*.75)){
-      std::cout<<"Q1 Average "<<mode<<" Score: "<<int(currentTotal/count)<<endl;
-    }
-    if(count==size){
-      std::cout<<"Q1 Average "<<mode<<" Score: "<<int(currentTotal/count)<<endl;
+    if(calculatedTraverse->data=="5"||calculatedTraverse->data=="4"){
+      positiveReviewCount++;
+    }else if(calculatedTraverse->data=="2"||calculatedTraverse->data=="1"){
+      negativeReviewCount++;
+    }else{
+      neutralReviewCount++;
     }
     calculatedTraverse=calculatedTraverse->next;
   }
+  std::cout << "Percentage of Positive Review: " 
+          << std::fixed << std::setprecision(2) 
+          << (positiveReviewCount / static_cast<double>(count)) * 100 
+          << "% Number of Positive Review: " << positiveReviewCount << std::endl;
+  std::cout << "Percentage of Negative Review: " 
+          << std::fixed << std::setprecision(2) 
+          << (negativeReviewCount / static_cast<double>(count)) * 100 
+          << "% Number of Negative Review: " << negativeReviewCount << std::endl;
+  std::cout << "Percentage of Neutral Review: " 
+          << std::fixed << std::setprecision(2) 
+          << (neutralReviewCount / static_cast<double>(count)) * 100 
+          << "% Number of Neutral Review: " << neutralReviewCount << std::endl;
 }
 
 } // namespace eric

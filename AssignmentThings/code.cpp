@@ -170,7 +170,7 @@ int main() {
 
     quarterlyAverage(calculatedScores.head,calculatedScores.size,"Calculated");
 
-    
+    distributionPercentage(calculatedScores.head);
   }
 
   cout << "End of program" << endl;
