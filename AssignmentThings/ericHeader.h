@@ -118,10 +118,17 @@ void printList(Node *node) {
 //  there are cases where it's not beneficial such as the positive word "a+"
 //  as it is not the same meaning as "a".
 std::string removeSpecialCharacter(const std::string &s) {
+  //lastWasAlpha thing is to check special cases such as "good.you" as seen in line 4388
+  //probably worsen performance by alot :(
   std::string result;
+  bool lastWasAlpha = false;
   for (char c : s) {
     if (std::isalpha(c) || c == '-' || c == '*' || c == '+') {
       result += c;
+      lastWasAlpha = true;
+    }else if(lastWasAlpha&&c=='.'){
+      result +=' ';
+      lastWasAlpha=false;
     }
   }
   return result;
@@ -138,9 +145,11 @@ eric::LinkedList lineSplit(std::string line, std::string delimiter) {
   std::string word;
   while (data >> word) {
     word = removeSpecialCharacter(word);
-    if (!word.empty()) {
-      list.insertAtEnd(word);
-      // std::cout << word << std::endl;
+    std::stringstream secondData(word);
+    while(secondData>>word){
+      if(!word.empty()){
+        list.insertAtEnd(word);
+      }
     }
   }
   return list;
@@ -178,9 +187,10 @@ public:
     }
   }
 
-  std::fstream &getFileStream() { return fileOutput; }
+  std::fstream &getFileStream() { 
+    return fileOutput; 
+  }
 
-  // std::string* recordsToArray(){
   void recordsToArray(bool skipHeader) {
     std::string line;
     while (std::getline(fileOutput, line)) {
@@ -199,6 +209,10 @@ public:
 };
 
 double calculateSentimentScore(int positiveWordCount, int negativeWordCount) {
+  if(positiveWordCount==0&&negativeWordCount==0){
+    return 0;
+  }
+  //Based on the given assignment
   int totalMatchingWordCount = positiveWordCount + negativeWordCount;
   int rawSentimentScore = positiveWordCount - negativeWordCount;
 
@@ -213,6 +227,7 @@ double calculateSentimentScore(int positiveWordCount, int negativeWordCount) {
 
 void simpleDisplay(const Node *positiveWordsFound,const Node *negativeWordsFound,
                    int positiveSize, int negativeSize, int sentimentScore) {
+  //Not much logic, just displaying things
   cout << "Positive Words = " << positiveSize << endl;
   const Node* tempPositive = positiveWordsFound;
   while (tempPositive != nullptr) {
@@ -292,6 +307,7 @@ matchingWordReturn findMatchingWord(Node *reviewLineHead, Node *positiveWordList
 
   answer.sentimentScore =
       calculateSentimentScore(answer.positiveWordCount, answer.negativeWordCount);
+  //cout<<answer.sentimentScore<<endl;
   // cout<<positiveWordCount<<endl;
   // cout<<negativeWordCount<<endl;
 
@@ -426,15 +442,12 @@ Node *mergeSortInt(Node *head) {
     return mergeInt(head, second);
 }
 
-int printFrequencyList(Node* head) {
+void printFrequencyList(Node* head) {
     Node* current = head;
-    int max = 0;
     while (current != nullptr) {
         std::cout << current->data << " = " << current->frequencyCount << " times" << std::endl;
-        max = current->frequencyCount;
         current = current->next;
     }
-    return max;
 }
 
 void printMinFrequencyWords(Node* head) {
@@ -443,6 +456,7 @@ void printMinFrequencyWords(Node* head) {
     std::cout<<"Minimum used words in the reviews: ";
     Node* current = head;
     int min = head->frequencyCount;
+    //Continue printing as long as it's the minimum frequency count
     while (current != nullptr) {
         if (current->frequencyCount == min) {
             if(current!=head){
@@ -450,6 +464,7 @@ void printMinFrequencyWords(Node* head) {
             }
             std::cout<<current->data;
         }else{
+          //Once it's not the min, just break out
           break;
         }
         current = current->next;
@@ -461,6 +476,7 @@ void printMaxFrequencyWords(Node* head) {
     int maxCount = head->frequencyCount;
     Node* current = head;
 
+    //Find the max
     while (current != nullptr) {
         if (current->frequencyCount > maxCount) {
             maxCount = current->frequencyCount;
@@ -472,7 +488,7 @@ void printMaxFrequencyWords(Node* head) {
     current = head; 
 
     cout << "Maximum used words in the reviews: ";
-
+    //Print if max
     while (current != nullptr) {
         if (current->frequencyCount == maxCount) {
             if (hasMaxWords) {
@@ -492,8 +508,7 @@ void printMaxFrequencyWords(Node* head) {
 }
 
 void printFrequencyInAscendingOrder(Node* allWordsFoundHead) {
-    // Step 1: Maintain a frequency linked list
-    LinkedList frequencyList; // Assuming LinkedList is defined to manage nodes
+    LinkedList frequencyList; 
     Node* current = allWordsFoundHead;
 
     while (current != nullptr) {
@@ -503,9 +518,11 @@ void printFrequencyInAscendingOrder(Node* allWordsFoundHead) {
             frequencyNode = frequencyNode->next;
         }
 
+        // If the word does not exists, add it
         if (frequencyNode == nullptr) {              
             frequencyList.insertAtEnd(current->data);    
         } else {
+          //Word exists, increment frequency count
             frequencyNode->frequencyCount++;     
             // cout<<frequencyNode->data<<endl;      
             // cout<<frequencyNode->frequencyCount<<endl;
@@ -519,11 +536,64 @@ void printFrequencyInAscendingOrder(Node* allWordsFoundHead) {
 
     // printList(frequencyList.head);     
 
-    int max = printFrequencyList(frequencyList.head);
+    printFrequencyList(frequencyList.head);
 
     printMinFrequencyWords(frequencyList.head);
   
     printMaxFrequencyWords(frequencyList.head);
+}
+
+void quarterlyAverage(Node* calculatedScoresHead,int size,string mode){
+  //if mode is true then we're calculating for "Calculated" score
+  std::cout<<"\n"<<endl;
+  Node* calculatedTraverse=calculatedScoresHead;
+  int count=0;
+  int currentTotal=0;
+  while(calculatedTraverse!=nullptr){
+    count++;
+    currentTotal+=stoi(calculatedTraverse->data);
+
+    if(count==int(size*.25)){
+      std::cout<<"Q1 Average "<<mode<<" Score: "<<int(currentTotal/count)<<endl;
+    }
+    if(count==int(size*.50)){
+      std::cout<<"Q1 Average "<<mode<<" Score: "<<int(currentTotal/count)<<endl;
+    }
+    if(count==int(size*.75)){
+      std::cout<<"Q1 Average "<<mode<<" Score: "<<int(currentTotal/count)<<endl;
+    }
+    if(count==size){
+      std::cout<<"Q1 Average "<<mode<<" Score: "<<int(currentTotal/count)<<endl;
+    }
+    calculatedTraverse=calculatedTraverse->next;
+  }
+}
+
+void distributionPercentage(Node* calculatedScoresHead,int size){
+  std::cout<<"\n"<<endl;
+  Node* calculatedTraverse=calculatedScoresHead;
+  int count=0;
+  int positiveReviewCount=0;
+  int negativeReviewCount=0;
+  int neutralReviewCount=0;
+  while(calculatedTraverse!=nullptr){
+    count++;
+    currentTotal+=stoi(calculatedTraverse->data);
+
+    if(count==int(size*.25)){
+      std::cout<<"Q1 Average "<<mode<<" Score: "<<int(currentTotal/count)<<endl;
+    }
+    if(count==int(size*.50)){
+      std::cout<<"Q1 Average "<<mode<<" Score: "<<int(currentTotal/count)<<endl;
+    }
+    if(count==int(size*.75)){
+      std::cout<<"Q1 Average "<<mode<<" Score: "<<int(currentTotal/count)<<endl;
+    }
+    if(count==size){
+      std::cout<<"Q1 Average "<<mode<<" Score: "<<int(currentTotal/count)<<endl;
+    }
+    calculatedTraverse=calculatedTraverse->next;
+  }
 }
 
 } // namespace eric

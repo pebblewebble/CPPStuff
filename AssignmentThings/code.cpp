@@ -91,6 +91,8 @@ int main() {
   int totalPositiveWords=0;
   int totalNegativeWords=0;
   eric::LinkedList allWordsFound;
+  eric::LinkedList calculatedScores;
+  eric::LinkedList csvScores;
 
   while (std::getline(reviewsFileStream, line)) {
     // Some files have a header that you might want to skip the first line
@@ -137,6 +139,9 @@ int main() {
       if(chosenLine==lineCount+1){
         break;
       }
+      //to highlight trends later on
+      calculatedScores.insertAtEnd(to_string(convertedScore));
+      csvScores.insertAtEnd(to_string(csvSentimentScore));
     }
 
     lineCount++;
@@ -162,6 +167,10 @@ int main() {
     std::cout<<"\n"<<endl;
 
     printFrequencyInAscendingOrder(allWordsFound.head);
+
+    quarterlyAverage(calculatedScores.head,calculatedScores.size,"Calculated");
+
+    
   }
 
   cout << "End of program" << endl;
