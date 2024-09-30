@@ -22,21 +22,39 @@ int main() {
   std::fstream &positiveWordsFileStream = positiveWordsFile.getFileStream();
   eric::LinkedListSentimentWords positiveWords =
       eric::LinkedListSentimentWords();
+  eric::LinkedListSentimentWords positiveWordsHalf =
+      eric::LinkedListSentimentWords();
 
   eric::files negativeWordsFile = eric::files("negative-words.txt");
   std::fstream &negativeWordsFileStream = negativeWordsFile.getFileStream();
   eric::LinkedListSentimentWords negativeWords =
       eric::LinkedListSentimentWords();
+  eric::LinkedListSentimentWords negativeWordsHalf =
+      eric::LinkedListSentimentWords();
 
 
   // Storing sentiment words into a linked list first
+  // I manually determined the half way point
+  // positive halfway point is 1003
+  // negative halfway point is 2391
   std::string word;
+  int count=0;
   while (std::getline(positiveWordsFileStream, word)) {
-    positiveWords.addWord(word);
+    count++;
+    if(count<1003){
+        positiveWords.addWord(word);
+    }else{
+      positiveWordsHalf.addWord(word);
+    }
   }
-
+  count=0;
   while (std::getline(negativeWordsFileStream, word)) {
-    negativeWords.addWord(word);
+    count++;
+    if(count<2391){
+      negativeWords.addWord(word);
+    }else{
+      negativeWordsHalf.addWord(word);
+    }
   }
 
   // User CLI?
@@ -120,8 +138,9 @@ int main() {
       //Finds the matching positive AND negative words, calculates it, and returns them
       //The reason why I did the calculation within this function call is because
       //It would seem mandatory in conjuction when finding matching words
-      matchingWordReturn result = eric::findMatchingWord(list.head, positiveWords.data.head,
-                                          negativeWords.data.head,option);
+      // matchingWordReturn result = eric::findMatchingWord(list.head, positiveWords.data.head,
+                                          // negativeWords.data.head,option);
+      matchingWordReturn result = eric::findMatchingWord(list.head,positiveWords.data.head,negativeWords.data.head,positiveWordsHalf.data.head,negativeWordsHalf.data.head,positiveWords.data.tail,negativeWords.data.tail,option);
 
       //Convert double to int
       int convertedScore = int(result.sentimentScore);

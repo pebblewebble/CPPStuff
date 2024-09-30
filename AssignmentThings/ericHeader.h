@@ -319,6 +319,84 @@ matchingWordReturn findMatchingWord(Node *reviewLineHead, Node *positiveWordList
   return answer;
 }
 
+matchingWordReturn findMatchingWord(Node *reviewLineHead, Node *positiveWordList,
+                     Node *negativeWordList,Node *positiveWordHalfList, Node *negativeWordHalfList,
+                      Node *postiveWordListTail, Node *negativeWordListTail,int display) {
+  Node *traverse = reviewLineHead;
+  matchingWordReturn answer;
+  Node *traversePositive = positiveWordList;
+  Node *traverseNegative = negativeWordList;
+  Node *traversePositiveHalf = positiveWordHalfList;
+  Node *traverseNegativeHalf = negativeWordHalfList;
+  answer.positiveWordCount = 0;
+  answer.negativeWordCount = 0;
+
+  while (traverse != nullptr) {
+    Node *traversePositive = positiveWordList;
+    Node *traverseNegative = negativeWordList;
+    if(postiveWordListTail->data > traverse->data || negativeWordListTail->data > traverse->data){
+      while (traversePositive != nullptr &&
+                traversePositive->data < traverse->data) {
+            traversePositive = traversePositive->next;
+          }
+          if (traversePositive != nullptr &&
+              traversePositive->data == traverse->data) {
+            answer.positiveWordsFound.insertAtEnd(traverse->data);
+            answer.positiveWordCount++;
+          }
+          
+
+      while (traverseNegative != nullptr &&
+                traverseNegative->data < traverse->data) {
+            traverseNegative = traverseNegative->next;
+          }
+          if (traverseNegative != nullptr &&
+              traverse->data == traverseNegative->data) {
+        
+            answer.negativeWordsFound.insertAtEnd(traverse->data);
+            answer.negativeWordCount++;
+          }
+    }else{
+      Node *traversePositiveHalf = positiveWordHalfList;
+      Node *traverseNegativeHalf = negativeWordHalfList;
+      while (traversePositiveHalf != nullptr &&
+                traversePositiveHalf->data < traverse->data) {
+            traversePositiveHalf = traversePositiveHalf->next;
+          }
+          if (traversePositiveHalf != nullptr &&
+              traversePositiveHalf->data == traverse->data) {
+            answer.positiveWordsFound.insertAtEnd(traverse->data);
+            answer.positiveWordCount++;
+          }
+      
+      while (traverseNegativeHalf != nullptr &&
+                traverseNegativeHalf->data < traverse->data) {
+            traverseNegativeHalf = traverseNegativeHalf->next;
+          }
+          if (traverseNegativeHalf != nullptr &&
+              traverse->data == traverseNegativeHalf->data) {
+        
+            answer.negativeWordsFound.insertAtEnd(traverse->data);
+            answer.negativeWordCount++;
+          }
+    }
+
+    traverse = traverse->next;
+  }
+
+  answer.sentimentScore =
+      calculateSentimentScore(answer.positiveWordCount, answer.negativeWordCount);
+  //cout<<answer.sentimentScore<<endl;
+  // cout<<positiveWordCount<<endl;
+  // cout<<negativeWordCount<<endl;
+
+  if(display!=2){
+    simpleDisplay(answer.positiveWordsFound.head, answer.negativeWordsFound.head,
+                  answer.positiveWordCount, answer.negativeWordCount, answer.sentimentScore);
+  }
+  return answer;
+}
+
 void compareScore(int convertedScore, int csvSentimentScore) {
   cout << "\n" << endl;
   cout << "Sentiment Score (1-5) = " << convertedScore << endl;
