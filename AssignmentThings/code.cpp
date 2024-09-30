@@ -10,12 +10,9 @@ using namespace eric;
 using namespace std;
 using namespace chrono;
 int main() {
+
+  //Opening the files
   eric::files reviews = eric::files("tripadvisor_hotel_reviews.csv");
-  // eric::files reviews=eric::files("test.csv");
-  // Read words and sort them based on alphabetic
-  // store them according to the first alphabet using hashmap
-  // key : alphabet
-  // value : dynamic array or linked list?
   std::fstream &reviewsFileStream = reviews.getFileStream();
 
   eric::files positiveWordsFile = eric::files("positive-words.txt");
@@ -28,9 +25,8 @@ int main() {
   eric::LinkedListSentimentWords negativeWords =
       eric::LinkedListSentimentWords();
 
-  // Probably iterate through positive-words.txt and store them into
-  // positiveWords as a 2d array I'll do a linked list implementation first
 
+  // Storing sentiment words into a linked list first
   std::string word;
   while (std::getline(positiveWordsFileStream, word)) {
     positiveWords.addWord(word);
@@ -68,6 +64,7 @@ int main() {
   std::cout << "3. Check Linked List Speed with Display Output\n";
   std::cout << "   *Note: It compares every line\n";
 
+  //USER OPTIONS
   int option;
   std::cin>>option;
   if(option>3 || option<1){
@@ -83,11 +80,11 @@ int main() {
     std::cout << "Please wait as the program runs. Usually takes 46 seconds\n"<<endl;
   }
 
-
   bool skipHeader = true;
   int lineCount = 0;
   std::string line;
   auto start = high_resolution_clock::now();
+  //Variables to do analysis later
   int totalPositiveWords=0;
   int totalNegativeWords=0;
   eric::LinkedList allWordsFound;
@@ -106,40 +103,52 @@ int main() {
     // The substring numbers used is to remove the unnecessary commas and
     // stuff
     int csvSentimentScore = std::stoi(line.substr(line.length() - 1, line.length()));
+    //Removes the csv score and unncessary commas
     line = line.substr(1, line.length() - 6);
+    //Split into a linked list
     eric::LinkedList list = eric::lineSplit(line, ", ");
     // printList(list.head);
     eric::mergeSort(&list.head);
     // printList(list.head);
 
+    //If a user wants a specific line, we can skip all these unncessary comparison
+    //until we reached the desired line
     if(chosenLine==-1 || chosenLine==lineCount+1){
+      //Finds the matching positive AND negative words, calculates it, and returns them
+      //The reason why I did the calculation within this function call is because
+      //It would seem mandatory in conjuction when finding matching words
       matchingWordReturn result = eric::findMatchingWord(list.head, positiveWords.data.head,
                                           negativeWords.data.head,option);
 
+      //Convert double to int
       int convertedScore = int(result.sentimentScore);
-
+      //For Analysis later
       totalPositiveWords+=result.positiveWordCount;
       totalNegativeWords+=result.negativeWordCount;
 
+      //We traverse the positive and negative words we found to add to the overall
+      //list so we have do an overall analysis later
       Node *positiveTraverse = result.positiveWordsFound.head;
       while(positiveTraverse!=nullptr){
         allWordsFound.insertAtEnd(positiveTraverse->data);
         positiveTraverse=positiveTraverse->next;
       }
-
+      //Same as above
       Node *negativeTraverse = result.negativeWordsFound.head;
       while(negativeTraverse!=nullptr){
         allWordsFound.insertAtEnd(negativeTraverse->data);
         negativeTraverse=negativeTraverse->next;
       }
 
+      //If user has chosen the option without display output
       if(option!=2){
         eric::compareScore(convertedScore, csvSentimentScore);
       }
       if(chosenLine==lineCount+1){
+        //If it has reached the user's desired line, just break out after all operations
         break;
       }
-      //to highlight trends later on
+      // adding the scores to highlight the trends later on
       calculatedScores.insertAtEnd(to_string(convertedScore));
       csvScores.insertAtEnd(to_string(csvSentimentScore));
     }
@@ -151,6 +160,8 @@ int main() {
 
   auto stop = high_resolution_clock::now();
   auto duration = duration_cast<seconds>(stop - start);
+  //If the user did not choose the first option, then display the speed, since
+  //if we're only analyzying a single line, the speed wouldn't really matter?
   if(chosenLine==-1){
     cout << "Time taken: " << duration.count() << " seconds" << endl;
   }
@@ -167,10 +178,11 @@ int main() {
     std::cout<<"\n"<<endl;
 
     printFrequencyInAscendingOrder(allWordsFound.head);
-
-    quarterlyAverage(calculatedScores.head,calculatedScores.size,"Calculated");
-
-    distributionPercentage(calculatedScores.head);
+    if(chosenLine==-1){
+      //Don't show this overall stats becuz user only chose one line to do analysis
+      quarterlyAverage(calculatedScores.head,calculatedScores.size,"Calculated");
+      distributionPercentage(calculatedScores.head);
+    }
   }
 
   cout << "End of program" << endl;
