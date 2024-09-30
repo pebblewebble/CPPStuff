@@ -140,7 +140,6 @@ std::string removeSpecialCharacter(const std::string &s) {
 // furthermore, we probably dont need random access anyways since we're
 // gonna check the words one by one sequentially
 eric::LinkedList lineSplit(std::string line, std::string delimiter) {
-  // void lineSplit(std::string line, std::string delimiter) {
   std::stringstream data(line);
   eric::LinkedList list;
   std::string word;
@@ -425,22 +424,21 @@ Node *mergeInt(Node *first, Node *second) {
     }
 }
 
-// Function to perform merge sort on a singly linked list
 Node *mergeSortInt(Node *head) {
   
-    // Base case: if the list is empty or has only one node, 
-    // it's already sorted
+    //Base case: if the list is empty or has only one node, 
+    //it's already sorted
     if (head == nullptr || head->next == nullptr)
         return head;
 
-    // Split the list into two halves
+    //Split the list into two halves
     Node *second = split(head);
 
-    // Recursively sort each half
+    //Recursively sort each half
     head = mergeSortInt(head);
     second = mergeSortInt(second);
 
-    // Merge the two sorted halves
+    //Merge the two sorted halves
     return mergeInt(head, second);
 }
 
@@ -514,13 +512,13 @@ void printFrequencyInAscendingOrder(Node* allWordsFoundHead) {
     Node* current = allWordsFoundHead;
 
     while (current != nullptr) {
-        // Check if the word already exists in the frequencyList
+        //Check if the word already exists in the frequencyList
         Node* frequencyNode = frequencyList.head;
         while (frequencyNode != nullptr && frequencyNode->data != current->data) {
             frequencyNode = frequencyNode->next;
         }
 
-        // If the word does not exists, add it
+        //If the word does not exists, add it
         if (frequencyNode == nullptr) {              
             frequencyList.insertAtEnd(current->data);    
         } else {
@@ -578,6 +576,7 @@ void distributionPercentage(Node* calculatedScoresHead){
   int positiveReviewCount=0;
   int negativeReviewCount=0;
   int neutralReviewCount=0;
+  //Add them to their respective groups based on the score
   while(calculatedTraverse!=nullptr){
     count++;
     if(calculatedTraverse->data=="5"||calculatedTraverse->data=="4"){

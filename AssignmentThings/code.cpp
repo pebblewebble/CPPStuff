@@ -6,6 +6,9 @@
 #include <sstream>
 #include <string>
 
+//An idea, if we halved the positive and negative words, since the review is sorted,
+// once it reaches the half point, we start to only check with half instead
+
 using namespace eric;
 using namespace std;
 using namespace chrono;
