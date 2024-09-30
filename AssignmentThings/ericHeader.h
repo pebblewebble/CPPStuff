@@ -559,13 +559,13 @@ void quarterlyAverage(Node* calculatedScoresHead,int size,string mode){
       std::cout<<"Q1 Average "<<mode<<" Score: "<<int(currentTotal/count)<<endl;
     }
     if(count==int(size*.50)){
-      std::cout<<"Q1 Average "<<mode<<" Score: "<<int(currentTotal/count)<<endl;
+      std::cout<<"Q2 Average "<<mode<<" Score: "<<int(currentTotal/count)<<endl;
     }
     if(count==int(size*.75)){
-      std::cout<<"Q1 Average "<<mode<<" Score: "<<int(currentTotal/count)<<endl;
+      std::cout<<"Q3 Average "<<mode<<" Score: "<<int(currentTotal/count)<<endl;
     }
     if(count==size){
-      std::cout<<"Q1 Average "<<mode<<" Score: "<<int(currentTotal/count)<<endl;
+      std::cout<<"Q4 Average "<<mode<<" Score: "<<int(currentTotal/count)<<endl;
     }
     calculatedTraverse=calculatedTraverse->next;
   }
