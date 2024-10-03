@@ -57,6 +57,14 @@ int main() {
     }
   }
 
+  // while (std::getline(positiveWordsFileStream, word)) {
+  //   positiveWords.addWord(word);
+  // }
+  // while (std::getline(negativeWordsFileStream, word)) {
+  //     negativeWords.addWord(word);
+  // }
+
+
   // User CLI?
   std::cout << "╔═════════════════════════════════════════════════════════════════╗\n";
   std::cout << "║                ██████╗ ███████╗████████╗██████╗                 ║\n";
@@ -98,7 +106,7 @@ int main() {
     std::cout << "Please enter the line number:\n";
     std::cin >> chosenLine; 
   }else{
-    std::cout << "Please wait as the program runs. Usually takes 46 seconds\n"<<endl;
+    std::cout << "Please wait as the program runs. Usually takes 23 seconds\n"<<endl;
   }
 
   bool skipHeader = true;
@@ -117,6 +125,7 @@ int main() {
     if (!skipHeader) {
     
     if(chosenLine==lineCount+1){
+      //Show the user their chosen line
       std::cout<<line<<endl;
       std::cout<<"\n"<<endl;
     }
@@ -138,9 +147,10 @@ int main() {
       //Finds the matching positive AND negative words, calculates it, and returns them
       //The reason why I did the calculation within this function call is because
       //It would seem mandatory in conjuction when finding matching words
-      // matchingWordReturn result = eric::findMatchingWord(list.head, positiveWords.data.head,
-                                          // negativeWords.data.head,option);
-      matchingWordReturn result = eric::findMatchingWord(list.head,positiveWords.data.head,negativeWords.data.head,positiveWordsHalf.data.head,negativeWordsHalf.data.head,positiveWords.data.tail,negativeWords.data.tail,option);
+
+      matchingWordReturn result = eric::findMatchingWord(list.head, positiveWords.data.head,
+                                          negativeWords.data.head,option);
+      // matchingWordReturn result = eric::findMatchingWord(list.head,positiveWords.data.head,negativeWords.data.head,positiveWordsHalf.data.head,negativeWordsHalf.data.head,positiveWords.data.tail,negativeWords.data.tail,option);
 
       //Convert double to int
       int convertedScore = int(result.sentimentScore);

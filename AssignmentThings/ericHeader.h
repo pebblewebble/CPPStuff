@@ -190,25 +190,11 @@ public:
   std::fstream &getFileStream() { 
     return fileOutput; 
   }
-
-  void recordsToArray(bool skipHeader) {
-    std::string line;
-    while (std::getline(fileOutput, line)) {
-      // Some files have a header that you might want to skip the first line
-      if (!skipHeader) {
-        // The substring numbers used is to remove the unnecessary commas and
-        // stuff
-        line = line.substr(1, line.length() - 6);
-        lineSplit(line, ", ");
-        std::cout << line << std::endl;
-        std::cin >> line;
-      }
-      skipHeader = false;
-    }
-  }
 };
 
 double calculateSentimentScore(int positiveWordCount, int negativeWordCount) {
+  //If a review does not have any positive or negative words,
+  //it should be a neutral review
   if(positiveWordCount==0&&negativeWordCount==0){
     //neutral
     return 3;
@@ -319,62 +305,68 @@ matchingWordReturn findMatchingWord(Node *reviewLineHead, Node *positiveWordList
   return answer;
 }
 
-matchingWordReturn findMatchingWord(Node *reviewLineHead, Node *positiveWordList,
-                     Node *negativeWordList,Node *positiveWordHalfList, Node *negativeWordHalfList,
-                      Node *postiveWordListTail, Node *negativeWordListTail,int display) {
+matchingWordReturn findMatchingWord(Node *reviewLineHead, Node *positiveWordListFirstHalf,
+                     Node *negativeWordListFirstHalf,Node *positiveWordSecondHalfList, Node *negativeWordSecondHalfList,
+                      Node *postiveWordListFirstHalfTail, Node *negativeWordListFirstHalfTail,int display) {
   Node *traverse = reviewLineHead;
   matchingWordReturn answer;
-  Node *traversePositive = positiveWordList;
-  Node *traverseNegative = negativeWordList;
-  Node *traversePositiveHalf = positiveWordHalfList;
-  Node *traverseNegativeHalf = negativeWordHalfList;
   answer.positiveWordCount = 0;
   answer.negativeWordCount = 0;
 
+  //Loop through each word in the linked list
   while (traverse != nullptr) {
-    Node *traversePositive = positiveWordList;
-    Node *traverseNegative = negativeWordList;
-    if(postiveWordListTail->data > traverse->data || negativeWordListTail->data > traverse->data){
-      while (traversePositive != nullptr &&
-                traversePositive->data < traverse->data) {
-            traversePositive = traversePositive->next;
+    //Resetting the traversal node for positive and negative list
+    Node *traversePositiveFirstHalf = positiveWordListFirstHalf;
+    Node *traverseNegativeFirstHalf = negativeWordListFirstHalf;
+    //Checks if the word is smaller in terms of lexicographical order than
+    // the last node of the first half of positive and negative list
+    //If it is then it's in the first half of the respective list
+    if(postiveWordListFirstHalfTail->data >= traverse->data || negativeWordListFirstHalfTail->data >= traverse->data){
+      //Loop thru the first half of positive word list
+      while (traversePositiveFirstHalf != nullptr &&
+                traversePositiveFirstHalf->data < traverse->data) {
+            //While it hasn't reached the end and if the lexicographical order is 
+            // before the current word
+            traversePositiveFirstHalf = traversePositiveFirstHalf->next;
           }
-          if (traversePositive != nullptr &&
-              traversePositive->data == traverse->data) {
+          //Check if it reached the end of the first half of the positive list
+          if (traversePositiveFirstHalf != nullptr &&
+              traversePositiveFirstHalf->data == traverse->data) {
             answer.positiveWordsFound.insertAtEnd(traverse->data);
             answer.positiveWordCount++;
           }
           
-
-      while (traverseNegative != nullptr &&
-                traverseNegative->data < traverse->data) {
-            traverseNegative = traverseNegative->next;
+      //Loop thru the first half of negative word list
+      while (traverseNegativeFirstHalf != nullptr &&
+                traverseNegativeFirstHalf->data < traverse->data) {
+            traverseNegativeFirstHalf = traverseNegativeFirstHalf->next;
           }
-          if (traverseNegative != nullptr &&
-              traverse->data == traverseNegative->data) {
-        
+          if (traverseNegativeFirstHalf != nullptr &&
+              traverse->data == traverseNegativeFirstHalf->data) {
             answer.negativeWordsFound.insertAtEnd(traverse->data);
             answer.negativeWordCount++;
           }
     }else{
-      Node *traversePositiveHalf = positiveWordHalfList;
-      Node *traverseNegativeHalf = negativeWordHalfList;
-      while (traversePositiveHalf != nullptr &&
-                traversePositiveHalf->data < traverse->data) {
-            traversePositiveHalf = traversePositiveHalf->next;
+      //For traversal
+      Node *traversePositiveSecondHalf = positiveWordSecondHalfList;
+      Node *traverseNegativeSecondHalf = negativeWordSecondHalfList;
+      //same logic as above just that we're doing it for the second half
+      while (traversePositiveSecondHalf != nullptr &&
+                traversePositiveSecondHalf->data < traverse->data) {
+            traversePositiveSecondHalf = traversePositiveSecondHalf->next;
           }
-          if (traversePositiveHalf != nullptr &&
-              traversePositiveHalf->data == traverse->data) {
+          if (traversePositiveSecondHalf != nullptr &&
+              traversePositiveSecondHalf->data == traverse->data) {
             answer.positiveWordsFound.insertAtEnd(traverse->data);
             answer.positiveWordCount++;
           }
       
-      while (traverseNegativeHalf != nullptr &&
-                traverseNegativeHalf->data < traverse->data) {
-            traverseNegativeHalf = traverseNegativeHalf->next;
+      while (traverseNegativeSecondHalf != nullptr &&
+                traverseNegativeSecondHalf->data < traverse->data) {
+            traverseNegativeSecondHalf = traverseNegativeSecondHalf->next;
           }
-          if (traverseNegativeHalf != nullptr &&
-              traverse->data == traverseNegativeHalf->data) {
+          if (traverseNegativeSecondHalf != nullptr &&
+              traverse->data == traverseNegativeSecondHalf->data) {
         
             answer.negativeWordsFound.insertAtEnd(traverse->data);
             answer.negativeWordCount++;
@@ -384,12 +376,14 @@ matchingWordReturn findMatchingWord(Node *reviewLineHead, Node *positiveWordList
     traverse = traverse->next;
   }
 
+  //Once we have matched all the words we can calculate the score now
   answer.sentimentScore =
       calculateSentimentScore(answer.positiveWordCount, answer.negativeWordCount);
   //cout<<answer.sentimentScore<<endl;
   // cout<<positiveWordCount<<endl;
   // cout<<negativeWordCount<<endl;
 
+  //Overall of the current line review
   if(display!=2){
     simpleDisplay(answer.positiveWordsFound.head, answer.negativeWordsFound.head,
                   answer.positiveWordCount, answer.negativeWordCount, answer.sentimentScore);
@@ -531,7 +525,7 @@ void printFrequencyList(Node* head) {
 void printMinFrequencyWords(Node* head) {
     if (head == nullptr) return;
 
-    std::cout<<"Minimum used words in the reviews: ";
+    std::cout<<"Minimum used sentiment words in the reviews: ";
     Node* current = head;
     int min = head->frequencyCount;
     //Continue printing as long as it's the minimum frequency count
@@ -565,7 +559,7 @@ void printMaxFrequencyWords(Node* head) {
     bool hasMaxWords = false;
     current = head; 
 
-    cout << "Maximum used words in the reviews: ";
+    cout << "Maximum used sentiment words in the reviews: ";
     //Print if max
     while (current != nullptr) {
         if (current->frequencyCount == maxCount) {
