@@ -8,6 +8,8 @@
 
 //An idea, if we halved the positive and negative words, since the review is sorted,
 // once it reaches the half point, we start to only check with half instead
+// We can probably use a reference of allPositiveWords and add inside findMatchingWord 
+// function instead of reiterating again to add into it
 
 using namespace eric;
 using namespace std;
@@ -148,9 +150,9 @@ int main() {
       //The reason why I did the calculation within this function call is because
       //It would seem mandatory in conjuction when finding matching words
 
-      matchingWordReturn result = eric::findMatchingWord(list.head, positiveWords.data.head,
-                                          negativeWords.data.head,option);
-      // matchingWordReturn result = eric::findMatchingWord(list.head,positiveWords.data.head,negativeWords.data.head,positiveWordsHalf.data.head,negativeWordsHalf.data.head,positiveWords.data.tail,negativeWords.data.tail,option);
+      // matchingWordReturn result = eric::findMatchingWord(list.head, positiveWords.data.head,
+                                          // negativeWords.data.head,option);
+      matchingWordReturn result = eric::findMatchingWord(list.head,positiveWords.data.head,negativeWords.data.head,positiveWordsHalf.data.head,negativeWordsHalf.data.head,positiveWords.data.tail,negativeWords.data.tail,&allWordsFound,option);
 
       //Convert double to int
       int convertedScore = int(result.sentimentScore);
@@ -160,17 +162,17 @@ int main() {
 
       //We traverse the positive and negative words we found to add to the overall
       //list so we have do an overall analysis later
-      Node *positiveTraverse = result.positiveWordsFound.head;
-      while(positiveTraverse!=nullptr){
-        allWordsFound.insertAtEnd(positiveTraverse->data);
-        positiveTraverse=positiveTraverse->next;
-      }
-      //Same as above
-      Node *negativeTraverse = result.negativeWordsFound.head;
-      while(negativeTraverse!=nullptr){
-        allWordsFound.insertAtEnd(negativeTraverse->data);
-        negativeTraverse=negativeTraverse->next;
-      }
+      // Node *positiveTraverse = result.positiveWordsFound.head;
+      // while(positiveTraverse!=nullptr){
+      //   allWordsFound.insertAtEnd(positiveTraverse->data);
+      //   positiveTraverse=positiveTraverse->next;
+      // }
+      // //Same as above
+      // Node *negativeTraverse = result.negativeWordsFound.head;
+      // while(negativeTraverse!=nullptr){
+      //   allWordsFound.insertAtEnd(negativeTraverse->data);
+      //   negativeTraverse=negativeTraverse->next;
+      // }
 
       //If user has chosen the option without display output
       if(option!=2){

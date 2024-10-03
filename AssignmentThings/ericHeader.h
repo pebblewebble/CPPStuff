@@ -1,4 +1,3 @@
-#include <array>
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -307,7 +306,8 @@ matchingWordReturn findMatchingWord(Node *reviewLineHead, Node *positiveWordList
 
 matchingWordReturn findMatchingWord(Node *reviewLineHead, Node *positiveWordListFirstHalf,
                      Node *negativeWordListFirstHalf,Node *positiveWordSecondHalfList, Node *negativeWordSecondHalfList,
-                      Node *postiveWordListFirstHalfTail, Node *negativeWordListFirstHalfTail,int display) {
+                      Node *postiveWordListFirstHalfTail, Node *negativeWordListFirstHalfTail,LinkedList *allWordsFound
+                      ,int display) {
   Node *traverse = reviewLineHead;
   matchingWordReturn answer;
   answer.positiveWordCount = 0;
@@ -333,6 +333,7 @@ matchingWordReturn findMatchingWord(Node *reviewLineHead, Node *positiveWordList
           if (traversePositiveFirstHalf != nullptr &&
               traversePositiveFirstHalf->data == traverse->data) {
             answer.positiveWordsFound.insertAtEnd(traverse->data);
+            allWordsFound->insertAtEnd(traverse->data);
             answer.positiveWordCount++;
           }
           
@@ -344,6 +345,7 @@ matchingWordReturn findMatchingWord(Node *reviewLineHead, Node *positiveWordList
           if (traverseNegativeFirstHalf != nullptr &&
               traverse->data == traverseNegativeFirstHalf->data) {
             answer.negativeWordsFound.insertAtEnd(traverse->data);
+            allWordsFound->insertAtEnd(traverse->data);
             answer.negativeWordCount++;
           }
     }else{
@@ -358,6 +360,7 @@ matchingWordReturn findMatchingWord(Node *reviewLineHead, Node *positiveWordList
           if (traversePositiveSecondHalf != nullptr &&
               traversePositiveSecondHalf->data == traverse->data) {
             answer.positiveWordsFound.insertAtEnd(traverse->data);
+            allWordsFound->insertAtEnd(traverse->data);
             answer.positiveWordCount++;
           }
       
@@ -369,6 +372,7 @@ matchingWordReturn findMatchingWord(Node *reviewLineHead, Node *positiveWordList
               traverse->data == traverseNegativeSecondHalf->data) {
         
             answer.negativeWordsFound.insertAtEnd(traverse->data);
+            allWordsFound->insertAtEnd(traverse->data);
             answer.negativeWordCount++;
           }
     }
