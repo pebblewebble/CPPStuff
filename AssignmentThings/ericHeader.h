@@ -1,6 +1,5 @@
 #include <fstream>
 #include <iostream>
-#include <sstream>
 #include <string>
 #include <iomanip>
 
@@ -139,19 +138,43 @@ std::string removeSpecialCharacter(const std::string &s) {
 // furthermore, we probably dont need random access anyways since we're
 // gonna check the words one by one sequentially
 eric::LinkedList lineSplit(std::string line, std::string delimiter) {
-  std::stringstream data(line);
-  eric::LinkedList list;
-  std::string word;
-  while (data >> word) {
-    word = removeSpecialCharacter(word);
-    std::stringstream secondData(word);
-    while(secondData>>word){
-      if(!word.empty()){
-        list.insertAtEnd(word);
-      }
+  // std::stringstream data(line);
+  // eric::LinkedList list;
+  // std::string word;
+  // while (data >> word) {
+  //   word = removeSpecialCharacter(word);
+  //   std::stringstream secondData(word);
+  //   while(secondData>>word){
+  //     if(!word.empty()){
+  //       list.insertAtEnd(word);
+  //     }
+  //   }
+  // }
+  // return list;
+    eric::LinkedList list;
+    std::string word;
+
+    for (char c : line) {
+        if (c == ' ') {
+            // When encountering a space, add the word to the list
+            if (!word.empty()) {
+                word = removeSpecialCharacter(word);  // Remove special characters
+                list.insertAtEnd(word);  // Add word to linked list
+                word.clear();  // Reset the word for the next one
+            }
+        } else {
+            // Continue building the current word
+            word += c;
+        }
     }
-  }
-  return list;
+
+    // Add the last word if there is one
+    if (!word.empty()) {
+        word = removeSpecialCharacter(word);
+        list.insertAtEnd(word);
+    }
+
+    return list;
 }
 
 class LinkedListSentimentWords {

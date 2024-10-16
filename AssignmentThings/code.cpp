@@ -1,9 +1,7 @@
 #include "ericHeader.h"
-#include <array>
 #include <chrono>
 #include <fstream>
 #include <iostream>
-#include <sstream>
 #include <string>
 
 //An idea, if we halved the positive and negative words, since the review is sorted,
@@ -35,8 +33,8 @@ int main() {
       eric::LinkedListSentimentWords();
 
 
+  auto start = high_resolution_clock::now();
   // Storing sentiment words into a linked list first
-  // I manually determined the half way point
   // positive halfway point is 1003
   // negative halfway point is 2391
   std::string word;
@@ -65,7 +63,9 @@ int main() {
   // while (std::getline(negativeWordsFileStream, word)) {
   //     negativeWords.addWord(word);
   // }
-
+  auto stop = high_resolution_clock::now();
+  auto duration = duration_cast<milliseconds>(stop - start);
+  cout << "Time taken: " << duration.count() << " milliseconds" << endl;
 
   // User CLI?
   std::cout << "╔═════════════════════════════════════════════════════════════════╗\n";
@@ -114,7 +114,7 @@ int main() {
   bool skipHeader = true;
   int lineCount = 0;
   std::string line;
-  auto start = high_resolution_clock::now();
+  // auto start = high_resolution_clock::now();
   //Variables to do analysis later
   int totalPositiveWords=0;
   int totalNegativeWords=0;
@@ -151,7 +151,7 @@ int main() {
       //It would seem mandatory in conjuction when finding matching words
 
       // matchingWordReturn result = eric::findMatchingWord(list.head, positiveWords.data.head,
-                                          // negativeWords.data.head,option);
+      //                                     negativeWords.data.head,option);
       matchingWordReturn result = eric::findMatchingWord(list.head,positiveWords.data.head,negativeWords.data.head,positiveWordsHalf.data.head,negativeWordsHalf.data.head,positiveWords.data.tail,negativeWords.data.tail,&allWordsFound,option);
 
       //Convert double to int
@@ -159,20 +159,6 @@ int main() {
       //For Analysis later
       totalPositiveWords+=result.positiveWordCount;
       totalNegativeWords+=result.negativeWordCount;
-
-      //We traverse the positive and negative words we found to add to the overall
-      //list so we have do an overall analysis later
-      // Node *positiveTraverse = result.positiveWordsFound.head;
-      // while(positiveTraverse!=nullptr){
-      //   allWordsFound.insertAtEnd(positiveTraverse->data);
-      //   positiveTraverse=positiveTraverse->next;
-      // }
-      // //Same as above
-      // Node *negativeTraverse = result.negativeWordsFound.head;
-      // while(negativeTraverse!=nullptr){
-      //   allWordsFound.insertAtEnd(negativeTraverse->data);
-      //   negativeTraverse=negativeTraverse->next;
-      // }
 
       //If user has chosen the option without display output
       if(option!=2){
@@ -192,12 +178,12 @@ int main() {
     skipHeader=false;
   }
 
-  auto stop = high_resolution_clock::now();
-  auto duration = duration_cast<seconds>(stop - start);
+  // auto stop = high_resolution_clock::now();
+  // auto duration = duration_cast<seconds>(stop - start);
   //If the user did not choose the first option, then display the speed, since
   //if we're only analyzying a single line, the speed wouldn't really matter?
   if(chosenLine==-1){
-    cout << "Time taken: " << duration.count() << " seconds" << endl;
+    // cout << "Time taken: " << duration.count() << " seconds" << endl;
   }
 
   std::cout<<"Would you like to see summary of overall reviews?(1/0)\n*Too much words to actually see the top in output if comparing all lines"<<endl;
