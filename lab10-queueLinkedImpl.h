@@ -105,6 +105,16 @@ public:
         return (!isEmpty()) ? rear->data : -1;
     }
 
+    int sum(){
+        Node *traverse=front;
+        int sum=0;
+        while(traverse!=nullptr){
+            sum=sum+traverse->data;
+            traverse=traverse->next;
+        }
+        return sum;
+    }
+
     void moveNthFront(int N){
         N=N-1;
         int counter = 0;
