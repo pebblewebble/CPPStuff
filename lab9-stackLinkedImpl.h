@@ -7,7 +7,7 @@ using namespace std;
 class Node
 {
 public:
-    int data;
+    string data;
     Node *next;
 };
 
@@ -20,12 +20,16 @@ public:
     bool isEmpty() { return (top == nullptr) ? true : false; }
     //  bool isFull(){}
 
-    int peek()
+    string peek()
     {
-        return top->data;
+        if(top!=nullptr){
+            return top->data;
+        }else{
+            return "";
+        }
     }
 
-    void push(int value)
+    void push(string value)
     {
         cout << "Pushing element = " << value << endl;
         Node *newNode = new Node();
@@ -35,10 +39,10 @@ public:
         top = newNode;
     }
 
-    int pop()
+    string pop()
     {
         Node *tobeDeleted = top;
-        int elem = -1;
+        string elem;
         if (isEmpty()) // empty stack
             cout << "Stack is empty!" << endl;
         else
