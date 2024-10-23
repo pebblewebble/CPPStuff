@@ -1,7 +1,7 @@
 /* lab10-queueArrayImpl.h */
 
 #include <iostream>
-#include "lab9-collection.h"
+#include "lab10-collection.h"
 
 using namespace std;
 #define SIZE 100

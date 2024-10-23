@@ -104,4 +104,22 @@ public:
     {
         return (!isEmpty()) ? rear->data : -1;
     }
+
+    void moveNthFront(int N){
+        N=N-1;
+        int counter = 0;
+        Node* traverse = front;
+        Node* temp;
+        while(traverse!=nullptr){
+           if(N==counter){
+                temp->next=traverse->next;
+                traverse->next=front;
+                front = traverse;
+                break;
+           } 
+           temp = traverse;
+           traverse=traverse->next;
+           counter++;
+        }
+    }
 };
